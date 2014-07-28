@@ -1,24 +1,21 @@
 #!/bin/bash
-set +x
 
+export GOROOT=/home/vcap/go
+export GOARCH=amd64
+export GOBIN=$GOROOT/bin
+export PATH=.:$PATH:$GOBIN
+export GOOS=linux
+export PATH=/var/vcap/packages/gnatsd/bin:$PATH
+export GOPATH=/var/vcap/packages/gnatsd
+
+GNATSD_CONFIG=/var/vcap/jobs/gnatsd/config
+GNATSD_BIN=/var/vcap/jobs/gnatsd/bin
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
-export PATH=/var/vcap/packages/ruby/bin:$PATH
-export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
-
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
+natsips=`more /home/vcap/script/resources/natsip.txt`
 
-UAA_CONFIG=/var/vcap/jobs/uaa/config
-UAA_BIN=/var/vcap/jobs/uaa/bin
-
-UAA_REGIST_CONFIG=$cfscriptdir/uaa/config/cf-registrar
-UAA_COMPILE_DIR=/home/vcap/uaa
-
-indexfile=/home/vcap/script/resources/uaa_index.txt
-source /home/vcap/script/uaa/edit_uaa.sh
-
-#----------------------- git init -----------------------
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
@@ -33,8 +30,9 @@ if [ ! -d $homedir/cf-release ]; then
     popd
 fi
 
+echo "GNATSD GIT INIT......"
 pushd $homedir/cf-release
-cd src/uaa
+cd src/gnatsd
 git submodule update --init
 popd
 
@@ -44,144 +42,33 @@ if [ ! -d $homedir/cf-config-script ]; then
     popd
 fi
 
-if [ ! -d /var/vcap/jobs/uaa ]; then
-    mkdir -p $UAA_CONFIG
-    mkdir -p $UAA_BIN 
+if [ ! -d /var/vcap/jobs/gnatsd ]; then
+    mkdir -p $GNATSD_CONFIG
+    mkdir -p $GNATSD_BIN
 fi
 
-mkdir -p /var/vcap/packages/uaa
-mkdir -p /home/vcap/uaa
+echo "This step will always be install......"
+    mkdir -p /var/vcap/packages
+    pushd /var/vcap/packages
 
-BUILD_DIR=/home/vcap/build
-mkdir -p $BUILD_DIR
-mkdir -p $BUILD_DIR/uaa
+    echo "Setup git checkout gonatsd......"
+    cp -a $homedir/cf-release/src/gnatsd /var/vcap/packages
+    mkdir -p /var/vcap/packages/gnatsd/src/github.com/apcera/gnatsd
+    cp -a $homedir/cf-release/src/gnatsd/* /var/vcap/packages/gnatsd/src/github.com/apcera/gnatsd
+    cd $GOPATH
+    go build
+    go install
+    mkdir -p /var/vcap/packages/gnatsd/bin
+    mv gnatsd /var/vcap/packages/gnatsd/bin
+    popd
 
-pushd $BUILD_DIR
-
-if [ ! -d $BUILD_DIR/cf-registrar-bundle-for-identity ]; then
-    cp -a $homedir/cf-release/src/cf-registrar-bundle-for-identity $BUILD_DIR
-fi
-
-if [ ! -f $BUILD_DIR/maven/apache-maven-3.1.1-bin.tar.gz ]; then
-    mkdir -p $BUILD_DIR/maven/
-    wget http://blob.cfblob.com/6f015bd2-aefb-4996-a9d7-1ac8c3411ad6
-    mv 6f015bd2-aefb-4996-a9d7-1ac8c3411ad6 $BUILD_DIR/maven/apache-maven-3.1.1-bin.tar.gz
-fi
-
-if [ ! -f $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz ]; then
-    wget http://blob.cfblob.com/869c365a-7c65-4454-8c09-212d01fa0fb1
-    mv 869c365a-7c65-4454-8c09-212d01fa0fb1 $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
-fi
-
-if [ ! -f $BUILD_DIR/openjdk-1.7.0_51.tar.gz ]; then
-    wget http://blob.cfblob.com/67b767f3-4032-4970-8535-05dbf7c696a5
-    mv 67b767f3-4032-4970-8535-05dbf7c696a5 $BUILD_DIR/openjdk-1.7.0_51.tar.gz
-fi
-
-if [ ! -f $BUILD_DIR/apache-tomcat-7.0.52.tar.gz ]; then
-    wget http://blob.cfblob.com/3156c5be-fde0-43ba-917b-6222c9c6d86e
-    mv 3156c5be-fde0-43ba-917b-6222c9c6d86e $BUILD_DIR/apache-tomcat-7.0.52.tar.gz
-fi
-
-if [ ! -f ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war ]; then
-    wget http://blob.cfblob.com/rest/objects/4e4e78bca21e121204e4e86ee151bc050928ba58f527
-    mv 4e4e78bca21e121204e4e86ee151bc050928ba58f527 ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war
-fi
-
-popd
-
-#-------------------------- uaa prepare -----------------------------
-#registrar information
-cd ${BUILD_DIR}/cf-registrar-bundle-for-identity
-
-bundle package --all
-
-#unpack Maven
-cd ${BUILD_DIR}
-tar zxvf maven/apache-maven-3.1.1-bin.tar.gz
-export MAVEN_HOME=${BUILD_DIR}/apache-maven-3.1.1
-
-# Make sure we can see uname
-export PATH=$PATH:/bin:/usr/bin
-
-#unpack Java - we support Mac OS 64bit and Linux 64bit otherwise we require JAVA_HOME to point to JDK
-if [ `uname` = "Darwin" ]; then
-  mkdir -p java
-  cd java
-  tar zxvf ../uaa/openjdk-1.7.0-u40-unofficial-macosx-x86_64-bundle.tgz --exclude="._*"
-  export JAVA_HOME=${BUILD_DIR}/java/Contents/Home
-elif [ `uname` = "Linux" ]; then
-  mkdir -p java
-  cd java
-  tar zxvf $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
-  export JAVA_HOME=${BUILD_DIR}/java
-else
-  if [ ! -d $JAVA_HOME ]; then
-    echo "JAVA_HOME properly set is required for non Linux/Darwin builds."
-    exit 1
-  fi	
-fi
-
-#setup Java and Maven paths
-export PATH=$MAVEN_HOME/bin:$JAVA_HOME/bin:$PATH
-
-#Maven options for building
-export MAVEN_OPTS='-Xmx1g -XX:MaxPermSize=512m'
-
-#build cloud foundry war
-cd $homedir/cf-release/src/uaa
-mvn clean
-mvn -U -e -B package -DskipTests=true -Ddot.git.directory=/home/vcap/cf-release/src/uaa/.git
-cp uaa/target/cloudfoundry-identity-uaa-*.war ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war
-
-#remove build resources
-mvn clean
-
-#clean up - so we don't transfer files we don't need
-#cd ${BUILD_DIR}
-#rm -rf apache-maven*
-#rm -rf java
-#rm -rf maven
-#rm -rf uaa/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
-#rm -rf uaa/openjdk-1.7.0-u40-unofficial-macosx-x86_64-bundle.tgz
-
-#--------------------------------- uaa installing.....---------------
-
-pushd /var/vcap/packages
-
-mkdir -p /var/vcap/packages/uaa
-
-cd /var/vcap/packages/uaa
-mkdir -p  jdk
-tar zxvf $BUILD_DIR/openjdk-1.7.0_51.tar.gz -C jdk
-
-cd /var/vcap/packages/uaa
-
-tar zxvf $BUILD_DIR/apache-tomcat-7.0.52.tar.gz
-
-mv apache-tomcat-7.0.52 tomcat
-
-cd tomcat
-rm -rf webapps/*
-cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war webapps/ROOT.war
-cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war webapps/varz.war
-
-cd /var/vcap/packages/uaa
-cp -a ${BUILD_DIR}/cf-registrar-bundle-for-identity vcap-common
-cd vcap-common
-/var/vcap/packages/ruby/bin/bundle package --all
-/var/vcap/packages/ruby/bin/bundle install --binstubs --deployment --local --without=development test
-
-popd
-
-
-#--------------------------etcd init ----------------------------------
-source /home/vcap/script/uaa/etcdinit.sh
+echo "GONATSD CONFIG INIT....."
+#--------------------- etcd init --------------------------
+source /home/vcap/script/gnatsd/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 
-register_nats_urls=/deployment/v1/nats-server/nats_urls
-register_uaa_urls=/deployment/v1/uaa-server
+register_nats_dir=/deployment/v1/nats-server
 
 pushd /home/vcap/
 
@@ -196,61 +83,29 @@ pushd /home/vcap/etcdctl
 ./build
 
 popd
+#--------------------- etcd register ----------------------
+etcdctl mkdir $register_nats_dir
+etcdctl mkdir $register_nats_dir/index
+#--------------------- etcd register ip --------------------
+rm -fr natsdirs.txt natsurls.txt natsindexdirs.txt
 
-rm -fr /home/vcap/script/resources/db_url.txt /home/vcap/script/resources/cc_base_url.txt
-rm -fr /home/vcap/script/resources/uaa_urls.txt uaasdirs.txt
+etcdctl mkdir $register_nats_dir/nats_urls
 
-etcdctl get /deployment/v1/db >> /home/vcap/script/resources/db_url.txt
-etcdctl get /deployment/v1/manifest/domain >> /home/vcap/script/resources/cc_base_url.txt
-
-rm -fr natsdirs.txt /home/vcap/script/resources/natsip.txt
-
-etcdctl mkdir /deployment/v1/nats-server/nats_urls
-
-etcdctl ls /deployment/v1/nats-server/nats_urls >> natsdirs.txt
+etcdctl ls $register_nats_dir/nats_urls >> natsdirs.txt
 
 while read urls
 do
-etcdctl get $urls >> /home/vcap/script/resources/natsip.txt
+etcdctl get $urls >> natsurls.txt
 done < natsdirs.txt
 
-if [ ! -f /home/vcap/script/resources/natsip.txt ]; then
-    echo "nats not deployment...." >> error.txt
-    exit 1
+if [ ! -f natsurls.txt ]; then
+    touch natsurls.txt
 fi
-
-etcdctl mkdir /deployment/v1/uaa-server
-etcdctl mkdir /deployment/v1/uaa-server/uaa_urls
-
-etcdctl ls /deployment/v1/uaa-server/uaa_urls >> uaasdirs.txt
-
-while read uaaurls
-do
-etcdctl get $uaaurls >> /home/vcap/script/resources/uaa_urls.txt
-done < uaasdirs.txt
-
-# create and register index
-message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/uaa-server/index |jq '.message' | cut -f 2 -d '"'`
-
-if [ "$message" == "Key not found" ]; then
-    etcdctl set /deployment/v1/uaa-server/index 0 > /home/vcap/script/resources/uaa_index.txt
-else
-    old_index=`etcdctl get /deployment/v1/uaa-server/index`
-    old_index=`expr $old_index + 1`
-    new_index=`etcdctl set /deployment/v1/uaa-server/index $old_index`
-    echo "$new_index" > /home/vcap/script/resources/uaa_index.txt
-fi
-
-if [ ! -f /home/vcap/script/resources/uaa_index.txt ]; then
-    touch /home/vcap/script/resources/uaa_index.txt
-fi
-
-# create and register uaa_urls
 
 flag="false"
   
 if [ "$NISE_IP_ADDRESS" != "" ]; then
-    for j in `cat /home/vcap/script/resources/uaa_urls.txt`
+    for j in `cat natsurls.txt`
     do
     if [ "$NISE_IP_ADDRESS" == "$j" ]
     then
@@ -261,63 +116,44 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
     if [ "$flag" == "false" ]
     then
         echo $etcd_endpoint
-        curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/uaa-server/uaa_urls -XPOST -d value=$NISE_IP_ADDRESS
+        curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/nats-server/nats_urls -XPOST -d value=$NISE_IP_ADDRESS
+        
+        #register index
+        message=`curl -L http://$etcd_endpoint:4001/v2/keys/$register_nats_dir/index/0 |jq '.message' | cut -f 2 -d '"'`
+        if [ "$message" == "Key not found" ]; then
+            etcdctl set $register_nats_dir/index/0 $NISE_IP_ADDRESS
+            echo "0" > /home/vcap/script/resources/gnatsd_index.txt
+        else
+            etcdctl ls $register_nats_dir/index >> natsindexdirs.txt
+            last=`sed -n '$=' natsindexdirs.txt`
+            new_index=`expr $last + 1`
+            etcdctl set $register_nats_dir/index/$new_index $NISE_IP_ADDRESS
+            echo "$new_index" > /home/vcap/script/resources/gnatsd_index.txt
+        fi
     fi
     if [ "$flag" == "true" ]
     then
-        old_index=`etcdctl get deployment/v1/uaa-server/index`
-        echo $old_index
-        if [ "$old_index" == "0" ]; then 
-            new_index=`etcdctl set /deployment/v1/uaa-server/index 0`
-            echo "$new_index" > /home/vcap/script/resources/uaa_index.txt
-        else
-            old_index=`expr $old_index - 1`        
-            new_index=`etcdctl set deployment/v1/uaa-server/index $old_index`    
-            echo "$new_index" > /home/vcap/script/resources/uaa_index.txt
-        fi        
+        echo "flag is true,this is info: the ip is already regist!And other just update!"
     fi
 else
     break  
 fi
 
-#------------------------- UAA config ---------------------------------
-cp -a $cfscriptdir/uaa/config/* $UAA_CONFIG/
-rm -fr $UAA_CONFIG/uaa.yml
-rm -fr $UAA_CONFIG/cf-registrar/config.yml
+pushd $GNATSD_CONFIG
+cp -a $cfscriptdir/nats/config/* $GNATSD_CONFIG
+sed -i "s/192.168.64.142/${NISE_IP_ADDRESS}/g" `grep 192.168.64.142 -rl $GNATSD_CONFIG`
 
-pushd $UAA_CONFIG
-
-#localhost
-NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
-
-#db_url
-db_url=`more /home/vcap/script/resources/db_url.txt`
-
-#nats_urls
-while read line
-do
-echo -e "- nats://nats:c1oudc0w@$line:4222" >> lnats.txt
-done < /home/vcap/script/resources/natsip.txt
-
-nats_servers=`more lnats.txt`
-
-#uaa_index
-index=$(cat $indexfile)
-
-#base_url
-cc_base_url=`more /home/vcap/script/resources/cc_base_url.txt`
-
-edit_uaa "$cc_base_url" "$nats_servers" "$db_url" "$NISE_IP_ADDRESS" "$index"
-
-rm -fr lnats.txt
-popd
-
-#--------------------------------- UAA bin ---------------------------------
-pushd $UAA_BIN
-
-cp -a $cfscriptdir/uaa/bin/* $UAA_BIN/
-chmod +x $UAA_BIN/*
+#Jedgement the natsip.txt if not exit,add it in the file
+echo $NISE_IP_ADDRESS |grep -q "$natsips"
+if [ $? -eq 0 ] && [[ $(stat -c %s /home/vcap/script/resources/natsip.txt) -ne 0 ]]
+then
+    echo "Include......or the file is empty!"
+else
+    echo "$NISE_IP_ADDRESS" >> /home/vcap/script/resources/natsip.txt
+fi
 
 popd
 
-echo "uaa is already installed success!"
+echo "GONATSD BIN INIT......"
+cp -a $cfscriptdir/nats/bin/* $GNATSD_BIN
+chmod -R +x $GNATSD_BIN/*

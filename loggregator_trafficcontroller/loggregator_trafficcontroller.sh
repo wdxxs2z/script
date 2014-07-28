@@ -173,12 +173,12 @@ do
 done < zonen.txt
 
 #loggregator_trafficconntroller url register
-etcdctl mkdir /deployment/v1/loggregator_traffic/traffic_url
+etcdctl mkdir /deployment/v1/loggregator-traffic/traffic_url
 rm -fr traffic_dirs.txt
 rm -fr /home/vcap/script/resources/loggregator_endpoint.txt
 flag="true"
 
-etcdctl ls /deployment/v1/loggregator_traffic/traffic_url >> traffic_dirs.txt
+etcdctl ls /deployment/v1/loggregator-traffic/traffic_url >> traffic_dirs.txt
 
 while read line
 do
@@ -195,7 +195,7 @@ do
 done < /home/vcap/script/resources/loggregator_endpoint.txt
 
 if [ "$flag" == "true" ]; then
-    curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator_traffic/traffic_url -XPOST -d value=$NISE_IP_ADDRESS
+    curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-traffic/traffic_url -XPOST -d value=$NISE_IP_ADDRESS
     echo "$NISE_IP_ADDRESS" >> /home/vcap/script/resources/loggregator_endpoint.txt
 fi
 

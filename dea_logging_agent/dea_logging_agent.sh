@@ -107,8 +107,8 @@ fi
 #loggregator_endpoint_urls
 rm -rf /home/vcap/script/resources/loggregator_endpoint.txt
 rm -fr traffic_dirs.txt
-
-etcdctl ls /deployment/v1/loggregator_traffic/traffic_url >> traffic_dirs.txt
+fic
+etcdctl ls /deployment/v1/loggregator-traffic/traffic_url >> traffic_dirs.txt
 
 while read line
 do
@@ -124,6 +124,7 @@ fi
 #loggregator server and index
 etcdctl mkdir /deployment/v1/dea_logging_agent
 etcdctl mkdir /deployment/v1/dea_logging_agent/agent_urls
+etcdctl mkdir /deployment/v1/dea_logging_agent/index
 
 rm -fr agentsdirs.txt /home/vcap/script/resources/dea_log_agent_urls.txt
 
@@ -133,18 +134,6 @@ while read agent_urls
 do
 etcdctl get $agent_urls >> /home/vcap/script/resources/dea_log_agent_urls.txt
 done < agentsdirs.txt
-
-# create and register index
-message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/deployment/v1/dea_logging_agent/index |jq '.message' | cut -f 2 -d '"'`
-
-if [ "$message" == "Key not found" ]; then
-    etcdctl set /deployment/v1/dea_logging_agent/index 0 > $indexfile
-else
-    old_index=`etcdctl get /deployment/v1/dea_logging_agent/index`
-    old_index=`expr $old_index + 1`
-    new_index=`etcdctl set /deployment/v1/dea_logging_agent/index $old_index`
-    echo "$new_index" > $indexfile
-fi
 
 # create and register uaa_urls
 
@@ -163,19 +152,34 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
     then
         echo $etcd_endpoint
         curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/dea_logging_agent/agent_urls -XPOST -d value=$NISE_IP_ADDRESS
+        
+        #register index
+        message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/dea_logging_agent/index/0 |jq '.message' | cut -f 2 -d '"'`
+        if [ "$message" == "Key not found" ]; then
+            etcdctl set /deployment/v1/dea_logging_agent/index/0 $NISE_IP_ADDRESS
+            echo "0" > $indexfile
+        else
+            rm -fr deaagentindexdirs.txt
+            etcdctl ls /deployment/v1/dea_logging_agent/index >> deaagentindexdirs.txt
+            last=`sed -n '$=' deaagentindexdirs.txt`
+            new_index=`expr $last + 1`
+            etcdctl set /deployment/v1/dea_logging_agent/index/$new_index $NISE_IP_ADDRESS
+            echo "$new_index" > $indexfile
+        fi
     fi
     if [ "$flag" == "true" ]
     then
-        old_index=`etcdctl get deployment/v1/dea_logging_agent/index`
-        echo $old_index
-        if [ "$old_index" == "0" ]; then 
-            new_index=`etcdctl set /deployment/v1/dea_logging_agent/index 0`
-            echo "$new_index" > $indexfile
-        else
-            old_index=`expr $old_index - 1`        
-            new_index=`etcdctl set deployment/v1/dea_logging_agent/index $old_index`    
-            echo "$new_index" > $indexfile
-        fi        
+        echo "flag is true,this is info: the ip is already regist!And other just update!"
+        #keep old index
+        rm -fr oldindex.txt
+        etcdctl ls /deployment/v1/dea_logging_agent/index >> oldindex.txt
+        for old in `cat oldindex.txt`
+        do
+            old_urls=`etcdctl get $old`
+            if [ "$old_urls" == "$NISE_IP_ADDRESS" ]; then
+                echo "$old" |cut -f6 -d '/' > $indexfile
+            fi
+        done        
     fi
 else
     break  

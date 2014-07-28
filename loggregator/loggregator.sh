@@ -158,6 +158,7 @@ fi
 #loggregator server and index
 etcdctl mkdir /deployment/v1/loggregator-server
 etcdctl mkdir /deployment/v1/loggregator-server/loggregator_urls
+etcdctl mkdir /deployment/v1/loggregator-server/index
 
 rm -fr loggregatorsdirs.txt /home/vcap/script/resources/loggregator_urls.txt
 
@@ -167,18 +168,6 @@ while read loggregator_urls
 do
 etcdctl get $loggregator_urls >> /home/vcap/script/resources/loggregator_urls.txt
 done < loggregatorsdirs.txt
-
-# create and register index
-message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-server/index |jq '.message' | cut -f 2 -d '"'`
-
-if [ "$message" == "Key not found" ]; then
-    etcdctl set /deployment/v1/loggregator-server/index 0 > /home/vcap/script/resources/loggregator_index.txt
-else
-    old_index=`etcdctl get /deployment/v1/loggregator-server/index`
-    old_index=`expr $old_index + 1`
-    new_index=`etcdctl set /deployment/v1/loggregator-server/index $old_index`
-    echo "$new_index" > /home/vcap/script/resources/loggregator_index.txt
-fi
 
 # create and register uaa_urls
 
@@ -197,19 +186,34 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
     then
         echo $etcd_endpoint
         curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-server/loggregator_urls -XPOST -d value=$NISE_IP_ADDRESS
+
+        #register index
+        message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-server/index/0 |jq '.message' | cut -f 2 -d '"'`
+        if [ "$message" == "Key not found" ]; then
+            etcdctl set /deployment/v1/loggregator-server/index/0 $NISE_IP_ADDRESS
+            echo "0" > $indexfile
+        else
+            rm -fr loggregatorindexdirs.txt
+            etcdctl ls /deployment/v1/loggregator-server/index >> loggregatorindexdirs.txt
+            last=`sed -n '$=' loggregatorindexdirs.txt`
+            new_index=`expr $last + 1`
+            etcdctl set /deployment/v1/loggregator-server/index/$new_index $NISE_IP_ADDRESS
+            echo "$new_index" > $indexfile
+        fi
     fi
     if [ "$flag" == "true" ]
     then
-        old_index=`etcdctl get deployment/v1/loggregator-server/index`
-        echo $old_index
-        if [ "$old_index" == "0" ]; then 
-            new_index=`etcdctl set /deployment/v1/loggregator-server/index 0`
-            echo "$new_index" > /home/vcap/script/resources/loggregator_index.txt
-        else
-            old_index=`expr $old_index - 1`        
-            new_index=`etcdctl set deployment/v1/loggregator-server/index $old_index`    
-            echo "$new_index" > /home/vcap/script/resources/loggregator_index.txt
-        fi        
+        echo "flag is true,this is info: the ip is already regist!And other just update!"
+        #keep old index
+        rm -fr oldindex.txt
+        etcdctl ls /deployment/v1/loggregator-server/index >> oldindex.txt
+        for old in `cat oldindex.txt`
+        do
+            old_urls=`etcdctl get $old`
+            if [ "$old_urls" == "$NISE_IP_ADDRESS" ]; then
+                echo "$old" |cut -f6 -d '/' > $indexfile
+            fi
+        done       
     fi
 else
     break  
