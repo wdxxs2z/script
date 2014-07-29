@@ -18,10 +18,6 @@ source /home/vcap/script/loggregator_trafficcontroller/editlogtraffic.sh
 
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 
-pushd /home/vcap/script/resources/zones/
-zone_num=`ls -l |grep "^-" |grep "txt$" |wc -l`
-popd
-
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
@@ -258,7 +254,10 @@ else
 fi
 done < /home/vcap/script/resources/zones/$file
 
-echo $k $zone_num
+pushd /home/vcap/script/resources/zones/
+zone_num=`ls -l |grep "^-" |grep "txt$" |wc -l`
+popd
+
 if [ $k -eq $zone_num ]
 then
     echo "oh this is end"
