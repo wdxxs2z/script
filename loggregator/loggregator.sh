@@ -303,6 +303,8 @@ echo $NISE_IP_ADDRESS >> /home/vcap/script/resources/zones/$zone.txt
 curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-server/pool/$zone -XPOST -d value=$NISE_IP_ADDRESS
 fi
 
+rm -fr etcdstoredirs.txt loggregatorsdirs.txt natsdirs.txt z0dir.txt z1dir.txt zonedirs.txt oldindex.txt
+
 popd
 
 #+++++++++++++++++++++++++Loggregator BIN+++++++++++++++++++++++++++++++++++++++++++++++++++++
