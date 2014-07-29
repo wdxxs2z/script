@@ -6,20 +6,14 @@ cf-auto-deployment
 1.First you must make sure that your cf env is clean<span style="line-height:1.5;">.And you will make a user:"vcap"</span>
 </p>
 <p>
-	<br />
-sudo useradd -m vcap<br />
-<br />
-<br />
+sudo useradd -m vcap
 2.Second install etcdstore and start etcd make the deployment env<br />
-<br />
 deployment.etcd is deployment clusters,we must make the etcd connect correct.<br />
 <br />
 3.Modify and write your manifest<br />
-<br />
 manifest is important file:zone,domain,etcdcluster(not deployment).<br />
 <br />
 4.In accordance with the deployment installation order form.<br />
-<br />
 install manifest2etcd.sh<br />
 install postgresql<br />
 install gnatsd<br />
