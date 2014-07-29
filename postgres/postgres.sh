@@ -12,6 +12,11 @@ register_db_dir=/deployment/v1/db
 
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 
+if [ ! -d /var/vcap ]; then
+    sudo mkdir -p /var/vcap
+    sudo chown vcap:vcap /var/vcap
+fi
+
 #----------------- etcd init --------------------------
 
 source /home/vcap/script/postgres/etcdinit.sh
@@ -39,12 +44,6 @@ if [ ! -d $homedir/cf-release ]; then
     popd
 fi
 
-if [ ! -d /var/vcap ]; then
-    sudo mkdir -p /var/vcap
-    sudo chown vcap:vcap /var/vcap
-fi
-
-
 if [ ! -d $homedir/cf-config-script ]; then
     pushd $homedir
     git clone https://github.com/wdxxs2z/cf-config-script
@@ -61,10 +60,8 @@ fi
 
 pushd /var/vcap/packages
 
-if [ ! -f postgres/postgres-9.0.3-1.amd64.tar.gz ]; then
-    wget http://blob.cfblob.com/rest/objects/4e4e78bca31e122004e4e8ec646e2104f306af917d30
-    mv 4e4e78bca31e122004e4e8ec646e2104f306af917d30 postgres/postgres-9.0.3-1.amd64.tar.gz
-fi
+wget http://blob.cfblob.com/rest/objects/4e4e78bca31e122004e4e8ec646e2104f306af917d30
+mv 4e4e78bca31e122004e4e8ec646e2104f306af917d30 postgres/postgres-9.0.3-1.amd64.tar.gz
 
 tar xzf postgres/postgres-9.0.3-1.amd64.tar.gz -C postgres
 
