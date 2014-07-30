@@ -296,7 +296,7 @@ db_url=`more /home/vcap/script/resources/db_url.txt`
 
 edit_cc_worker "$NISE_IP_ADDRESS" "$nats_servers" "$index" "$base_url" "$log_endpoint_url" "$db_url"
 
-rm -fr lnats.txt
+rm -fr lnats.txt ccworkerdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt
 
 popd
 

@@ -172,7 +172,7 @@ fi
 #loggregator_endpoint_urls
 rm -rf /home/vcap/script/resources/loggregator_endpoint.txt
 rm -fr traffic_dirs.txt
-fic
+
 etcdctl ls /deployment/v1/loggregator-traffic/traffic_url >> traffic_dirs.txt
 
 while read line
@@ -288,7 +288,7 @@ db_url=`more /home/vcap/script/resources/db_url.txt`
 
 edit_cc_ng "$NISE_IP_ADDRESS" "$nats_servers" "$index" "$base_url" "$log_endpoint_url" "$db_url"
 
-rm -fr lnats.txt
+rm -fr lnats.txt ccngdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt loggregatorsdirs.txt
 
 popd
 
