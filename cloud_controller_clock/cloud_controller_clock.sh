@@ -78,6 +78,7 @@ pushd src/interfaces/libpq
   make install
 popd
 
+rm -fr /var/vcap/packages/postgresql-9.0.3
 popd
 
 pushd /var/vcap/packages
@@ -97,6 +98,7 @@ for x in bin include lib; do
   cp -a ${x} /var/vcap/packages/mysqlclient
 done
 
+rm -fr /var/vcap/packages/client-$VERSION
 popd
 
 pushd /var/vcap/packages
@@ -115,6 +117,7 @@ cd sqlite-autoconf-3070500
 make
 make install
 
+rm -fr /var/vcap/packages/sqlite-autoconf-3070500
 popd
 
 #--------------------------------- Cloud_controller_ng install -----------
