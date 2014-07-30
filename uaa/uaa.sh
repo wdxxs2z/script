@@ -152,6 +152,8 @@ pushd /var/vcap/packages
 mkdir -p /var/vcap/packages/uaa
 
 cd /var/vcap/packages/uaa
+rm -fr /var/vcap/packages/uaa/*
+
 mkdir -p  jdk
 tar zxvf $BUILD_DIR/openjdk-1.7.0_51.tar.gz -C jdk
 
