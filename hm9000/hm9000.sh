@@ -56,8 +56,7 @@ echo "This step will always be install......"
     cp -a $homedir/cf-release/src/hm9000 /var/vcap/packages
     cd $GOPATH/src/github.com/cloudfoundry/hm9000
     go build
-    mkdir -p /var/vcap/packages/hm9000/bin
-    cp ./hm9000 /var/vcap/packages/hm9000/bin
+    cp ./hm9000 /var/vcap/packages/hm9000/
     popd
 
 
