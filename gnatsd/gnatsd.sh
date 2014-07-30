@@ -8,8 +8,8 @@ export GOOS=linux
 export PATH=/var/vcap/packages/gnatsd/bin:$PATH
 export GOPATH=/var/vcap/packages/gnatsd
 
-GNATSD_CONFIG=/var/vcap/jobs/gnatsd/config
-GNATSD_BIN=/var/vcap/jobs/gnatsd/bin
+GNATSD_CONFIG=/var/vcap/jobs/nats/config
+GNATSD_BIN=/var/vcap/jobs/nats/bin
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
@@ -42,7 +42,7 @@ if [ ! -d $homedir/cf-config-script ]; then
     popd
 fi
 
-if [ ! -d /var/vcap/jobs/gnatsd ]; then
+if [ ! -d /var/vcap/jobs/nats ]; then
     mkdir -p $GNATSD_CONFIG
     mkdir -p $GNATSD_BIN
 fi
