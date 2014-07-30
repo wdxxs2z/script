@@ -5,8 +5,8 @@ cfdir=/home/vcap/cf-release
 cfscriptdir=/home/vcap/cf-config-script
 WARDEN_CONF_DIR=/var/vcap/jobs/dea_next/config
 WARDEN_BIN_DIR=/var/vcap/jobs/dea_next/bin
-export PATH=/home/vcap/ruby/bin:$PATH
-export RUBY_PATH=/home/vcap/ruby:$RUBY_PATH
+export PATH=/var/vcap/packages/ruby/bin:$PATH
+export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 export WARDEN_GEMFILE=/var/vcap/packages/warden/warden/Gemfile
 cgroup=`awk '/cgroup/ {print $0}' /etc/default/grub`
 cgroup2="GRUB_CMDLINE_LINUX=\"cgroup_enable=memory swapaccount=1\""

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export PATH=/home/vcap/ruby/bin:$PATH
-export RUBY_PATH=/home/vcap/ruby:$RUBY_PATH
+export PATH=/var/vcap/packages/ruby/bin:$PATH
+export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 export DEA_NEXT_GEMFILE=/var/vcap/packages/dea_next/Gemfile
 
 export GOROOT=/home/vcap/go

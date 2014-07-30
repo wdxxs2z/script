@@ -213,7 +213,7 @@ log_endpoint_url=`awk '{a[NR]=$0}END{srand();i=int(rand()*NR+1);print a[i]}' /ho
 
 editgorouter "$nats" "$log_endpoint_url" "$index"
 
-rm -fr gnats.txt oldindex.txt gorouterindexdirs.txt routersdirs.txt
+rm -fr gnats.txt oldindex.txt gorouterindexdirs.txt routersdirs.txt natsdirs.txt traffic_dirs.txt
 
 popd
 
