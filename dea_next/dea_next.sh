@@ -72,6 +72,8 @@ echo "This step will always be install......"
     cd /var/vcap/packages/dea_next/go/src/runner
     go build
     go install
+    mkdir -p /var/vcap/packages/dea_next/go/bin/
+    cp /var/vcap/packages/dea_next/go/src/runner/runner /var/vcap/packages/dea_next/go/bin/
     popd
 
 
