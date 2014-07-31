@@ -24,13 +24,15 @@ if [ ! -d /var/vcap ]; then
 fi
 
 if [ ! -d $homedir/cf-release ]; then
-    pushd $homedir
-    git clone https://github.com/cloudfoundry/cf-release
-    cd $homedir/cf-release
-    git checkout c4dfff2
-    git submodule update --init
-    popd
+    echo "No cf-release dir exit,Please updtae first." >> errors.txt
+    exit 1
 fi
+
+echo "GOROUTER GIT INIT......"
+pushd $homedir/cf-release
+cd src/etcd
+git submodule update --init
+popd
 
 if [ ! -d $homedir/cf-config-script ]; then
     pushd $homedir
@@ -53,8 +55,6 @@ echo "This step will always be install......"
     echo "Setup git checkout etcd......"
     cp -a $homedir/cf-release/src/etcd /var/vcap/packages
     cd /var/vcap/packages/etcd
-    git checkout 9af9438
-    git submodule update --init 
     ./build
 
     popd
