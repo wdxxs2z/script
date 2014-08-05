@@ -23,8 +23,8 @@ pushd /home/vcap/
 
     git clone https://github.com/cloudfoundry/cf-release 
     cd /home/vcap/cf-release
-    git pull origin  master
-    git checkout $cf_version
     git submodule update --init
+    git pull origin master
+    git checkout $cf_version
     
 popd

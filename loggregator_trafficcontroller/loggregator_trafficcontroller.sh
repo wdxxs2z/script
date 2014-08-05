@@ -55,7 +55,7 @@ echo "This step will always be install......"
     cd $GOPATH
     echo "--------loggregator_traficcontroller-----------"
     mkdir -p /var/vcap/packages/loggregator_trafficcontroller
-    mv release/trafficcontroller-linux-amd64 /var/vcap/packages/loggregator_trafficcontroller/trafficcontroller
+    mv release/trafficcontroller /var/vcap/packages/loggregator_trafficcontroller/trafficcontroller
     popd
 
 echo "LOGGREGATOR CONFIG INIT......"

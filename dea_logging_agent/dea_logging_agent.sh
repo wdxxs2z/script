@@ -57,7 +57,7 @@ echo "This step will always be install......"
     cd $GOPATH
     echo "--------loggreagator_dea_agent--------"
     mkdir -p /var/vcap/packages/dea_logging_agent
-    mv release/deaagent-linux-amd64 /var/vcap/packages/dea_logging_agent/deaagent
+    mv release/deaagent /var/vcap/packages/dea_logging_agent/deaagent
     popd
 
 #+++++++++++++++++++++++++++dea_logging_config init+++++++++++++++++++++++++

@@ -58,7 +58,7 @@ echo "This step will always be install......"
     ./build
     cd $GOPATH
     echo "--------loggregator---------"
-    mv release/loggregator-linux-amd64 /var/vcap/packages/loggregator/loggregator
+    mv release/loggregator /var/vcap/packages/loggregator/loggregator
     popd
 
 
