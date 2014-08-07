@@ -1,8 +1,5 @@
 #!/bin/bash
 
-export PATH=/var/vcap/packages/ruby/bin:$PATH
-export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
-
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
@@ -14,131 +11,18 @@ NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d
 
 indexfile=/home/vcap/script/resources/cloud_controller_clock_index.txt
 
-#------------------------ Git init --------------------------------
-if ! (which ruby); then
-    echo "Ruby is not or error setup,please install ruby......"
-    exit 1;
-fi
-
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
+    sudo chown -R vcap:vcap /var/vcap
 fi
+
+mkdir -p $CLOUD_CONTROLLER_CLOCK_CONFIG
+mkdir -p $CLOUD_CONTROLLER_CLOCK_BIN
 
 if [ ! -d $homedir/cf-config-script ]; then
     pushd $homedir
     git clone https://github.com/wdxxs2z/cf-config-script
     popd
-fi
-
-if [ ! -d $homedir/cf-release ]; then
-    echo "No cf-release dir exit,Please updtae first." >> errors.txt
-    exit 1
-fi
-
-echo "git init cloud_controller_ng"
-pushd $homedir/cf-release
-cd src/cloud_controller_ng
-git submodule update --init
-popd
-
-if [ ! -d /var/vcap/packages/cloud_controller_ng ]; then
-    mkdir -p /var/vcap/packages/cloud_controller_ng
-fi
-
-cp -a $homedir/cf-release/src/cloud_controller_ng/* /var/vcap/packages/cloud_controller_ng
-
-#------------------------ Resolve the cloud_controller_ng depdens ------
-if [ ! -d /var/vcap/packages ]; then 
-    mkdir -p /var/vcap/packages
-fi
-
-pushd /var/vcap/packages
-
-# libpq
-if [ ! -f postgresql-9.0.3.tar.gz ]; then   
-    wget http://blob.cfblob.com/rest/objects/4e4e78bca21e122004e4e8ec647a5404f306b0ec246e
-    mv 4e4e78bca21e122004e4e8ec647a5404f306b0ec246e postgresql-9.0.3.tar.gz
-fi
-
-mkdir -p /var/vcap/packages/libpq
-
-tar xzf postgresql-9.0.3.tar.gz
-
-cd postgresql-9.0.3
-
-./configure --prefix=/var/vcap/packages/libpq
-
-pushd src/bin/pg_config
-  make
-  make install
-popd
-
-cp -LR src/include /var/vcap/packages/libpq
-
-pushd src/interfaces/libpq
-  make
-  make install
-popd
-
-rm -fr /var/vcap/packages/postgresql-9.0.3
-popd
-
-pushd /var/vcap/packages
-
-#client-mysql
-if [ ! -f client-5.1.62-rel13.3-435-Linux-x86_64.tar.gz ]; then
-    wget http://blob.cfblob.com/rest/objects/4e4e78bca21e122204e4e9863926b104fb68b259c9fc
-    mv 4e4e78bca21e122204e4e9863926b104fb68b259c9fc client-5.1.62-rel13.3-435-Linux-x86_64.tar.gz
-fi
-
-VERSION=5.1.62-rel13.3-435-Linux-x86_64
-# Percona binary Linux build - minor change
-tar zxvf client-$VERSION.tar.gz
-
-cd client-$VERSION
-for x in bin include lib; do
-  cp -a ${x} /var/vcap/packages/mysqlclient
-done
-
-rm -fr /var/vcap/packages/client-$VERSION
-popd
-
-pushd /var/vcap/packages
-#sqlite
-if [ ! -f sqlite-autoconf-3070500.tar.gz ]; then
-    wget http://blob.cfblob.com/rest/objects/4e4e78bca11e121004e4e7d511f82104f3068661ccfa
-    mv 4e4e78bca11e121004e4e7d511f82104f3068661ccfa sqlite-autoconf-3070500.tar.gz
-fi
-
-tar xzf sqlite-autoconf-3070500.tar.gz
-mkdir -p /var/vcap/packages/sqlite
-
-cd sqlite-autoconf-3070500
-
-./configure --prefix=/var/vcap/packages/sqlite
-make
-make install
-
-rm -fr /var/vcap/packages/sqlite-autoconf-3070500
-popd
-
-#--------------------------------- Cloud_controller_ng install -----------
-pushd /var/vcap/packages/cloud_controller_ng
-
-bundle package --all
-
-mysqlclient_dir=/var/vcap/packages/mysqlclient
-libpq_dir=/var/vcap/packages/libpq
-
-bundle config build.mysql2 --with-mysql-dir=$mysqlclient_dir --with-mysql-include=$mysqlclient_dir/include/mysql
-bundle config build.pg --with-pg-lib=$libpq_dir/lib --with-pg-include=$libpq_dir/include
-bundle config build.sqlite3 --with-sqlite3-dir=/var/vcap/packages/sqlite
-bundle install --local --deployment --without development test
-
-popd
-
-if [ ! -d $CLOUD_CONTROLLER_CLOCK_CONFIG ]; then
-    mkdir -p $CLOUD_CONTROLLER_CLOCK_CONFIG
 fi
 
 pushd $CLOUD_CONTROLLER_CLOCK_CONFIG
@@ -298,10 +182,6 @@ rm -fr lnats.txt ccclockdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt logg
 popd
 
 #------------------------------- Cloud_controller_clock bin-------------------
-if [ ! -d $CLOUD_CONTROLLER_CLOCK_BIN ]; then
-    mkdir -p $CLOUD_CONTROLLER_CLOCK_BIN
-fi
-
 pushd $CLOUD_CONTROLLER_CLOCK_BIN
 
 cp -a $cfscriptdir/cloud_controller_clock/bin/* $CLOUD_CONTROLLER_CLOCK_BIN/
