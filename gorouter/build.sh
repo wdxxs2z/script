@@ -15,7 +15,7 @@ echo "------------GOROUTER---------------"
 
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
-    sudo chwon vcap:vcap /var/vcap
+    sudo chown vcap:vcap /var/vcap
 fi
 
 if [ ! -d $homedir/cf-release ]; then
