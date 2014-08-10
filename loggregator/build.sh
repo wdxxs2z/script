@@ -47,14 +47,22 @@ echo "This step will always be install......"
     mv release/deaagent /var/vcap/packages/dea_logging_agent/deaagent
     
     pushd /var/vcap/packages/
+
+    mkdir -p /var/vcap/packages/common/
+
+    cp -a /home/vcap/cf-release/src/common/* /var/vcap/packages/common/
+
+    mkdir -p /var/vcap/packages/syslog_aggregator
+
+    cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
     
-    tar -zcvf loggregator.tar.gz loggregator
+    tar -zcvf loggregator.tar.gz loggregator common syslog_aggregator
     curl -F "action=/upload/build" -F "uploadfile=@loggregator.tar.gz" http://192.168.201.128:9090/upload/build
     
-    tar -zcvf loggregator_trafficcontroller.tar.gz loggregator_trafficcontroller
+    tar -zcvf loggregator_trafficcontroller.tar.gz loggregator_trafficcontroller common syslog_aggregator
     curl -F "action=/upload/build" -F "uploadfile=@loggregator_trafficcontroller.tar.gz" http://192.168.201.128:9090/upload/build
     
-    tar -zcvf dea_logging_agent.tar.gz dea_logging_agent
+    tar -zcvf dea_logging_agent.tar.gz dea_logging_agent common syslog_aggregator
     curl -F "action=/upload/build" -F "uploadfile=@dea_logging_agent.tar.gz" http://192.168.201.128:9090/upload/build
        
     popd

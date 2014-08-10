@@ -24,13 +24,8 @@ if [ ! -d /var/vcap ]; then
 fi
     
 if [ ! -d $homedir/cf-release ]; then
-    pushd $homedir
-    git clone https://github.com/cloudfoundry/cf-release
-    sudo chown -R vcap:vcap cf-release 
-    cd $homedir/cf-release
-    git checkout c4dfff2
-    git submodule update --init
-    popd
+    echo "No cf-release dir exit,Please updtae first." >> errors.txt
+    exit 1
 fi
 
 if [ ! -d $homedir/cf-config-script ]; then
@@ -59,6 +54,7 @@ echo "This step will always be install......"
         cp -a $cfscriptdir/dea_next/config/warden.yml $WARDEN_CONF_DIR
 	cd warden
         bundle install
+        bundle install --local --deployment --without development test
         bundle exec rake setup[$WARDEN_CONF_DIR/warden.yml]
         cp -a $cfscriptdir/dea_next/bin/warden_ctl $WARDEN_BIN_DIR
 	chmod +x $WARDEN_BIN_DIR/warden_ctl

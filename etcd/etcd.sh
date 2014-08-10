@@ -54,7 +54,7 @@ echo "This step will always be install......"
 
     echo "Setup git checkout etcd......"
     cp -a $homedir/cf-release/src/etcd /var/vcap/packages
-    cd /var/vcap/packages/etcd
+    cd /var/vcap/packages/etcd 
     ./build
 
     popd

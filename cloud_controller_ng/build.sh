@@ -118,7 +118,15 @@ bundle install --local --deployment --without development test
 
 pushd /var/vcap/packages/
 
-tar -zcvf cloud_controller_ng.tar.gz cloud_controller_ng libpq mysqlclient sqlite 
+mkdir -p /var/vcap/packages/common/
+
+cp -a /home/vcap/cf-release/src/common/* /var/vcap/packages/common/
+
+mkdir -p /var/vcap/packages/syslog_aggregator
+
+cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+
+tar -zcvf cloud_controller_ng.tar.gz cloud_controller_ng libpq mysqlclient sqlite common syslog_aggregator
 
 curl -F "action=/upload/build" -F "uploadfile=@cloud_controller_ng.tar.gz" http://192.168.201.128:9090/upload/build
 

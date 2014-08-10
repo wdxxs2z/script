@@ -9,7 +9,7 @@ export GOARCH=amd64
 export GOBIN=$GOROOT/bin
 export PATH=.:$PATH:$GOBIN
 export GOOS=linux
-export PATH=/var/vcap/packages/dea_next/go/bin:$PATH
+#export PATH=/var/vcap/packages/dea_next/go/bin:$PATH
 export GOPATH=/var/vcap/packages/dea_next/go
 
 DEA_NEXT_CONFIG=/var/vcap/jobs/dea_next/config
@@ -62,11 +62,12 @@ echo "This step will always be install......"
     cp -a $homedir/cf-release/src/dea_next /var/vcap/packages
     cd /var/vcap/packages/dea_next
     bundle install
+    bundle install --local --deployment --without development test
 
     echo "Set install golang file dirserver"
     cd /var/vcap/packages/dea_next/go/src/runner
     go build
-    go install
+    go install runner
     mkdir -p /var/vcap/packages/dea_next/go/bin/
     cp /var/vcap/packages/dea_next/go/src/runner/runner /var/vcap/packages/dea_next/go/bin/
     popd

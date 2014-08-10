@@ -167,7 +167,7 @@ cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war webapps/varz.war
 cd /var/vcap/packages/uaa
 cp -a ${BUILD_DIR}/cf-registrar-bundle-for-identity vcap-common
 cd vcap-common
-/var/vcap/packages/ruby/bin/bundle package --all
+#/var/vcap/packages/ruby/bin/bundle package --all
 /var/vcap/packages/ruby/bin/bundle install --binstubs --deployment --local --without=development test
 
 popd

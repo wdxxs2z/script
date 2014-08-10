@@ -61,7 +61,16 @@ fi
     popd
 
 pushd /var/vcap/packages
-tar -zcvf dea_next.tar.gz dea_next
+
+mkdir -p /var/vcap/packages/common/
+
+cp -a /home/vcap/cf-release/src/common/* /var/vcap/packages/common/
+
+mkdir -p /var/vcap/packages/syslog_aggregator
+
+cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+
+tar -zcvf dea_next.tar.gz dea_next common syslog_aggregator
 
 curl -F "action=/upload/build" -F "uploadfile=@dea_next.tar.gz" http://192.168.201.128:9090/upload/build
 

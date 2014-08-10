@@ -203,7 +203,7 @@ nats_urls=`more lnats.txt`
 
 edit_dea_log_agent "$index" "$logging_endpoint_url" "$nats_urls"
 
-rm -fr lnats.txt
+rm -fr lnats.txt agentsdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt
 
 #+++++++++++++++++++++++++++dea_logging_bin init+++++++++++++++++++++++++
 echo "Dea_Logging_bin init......"

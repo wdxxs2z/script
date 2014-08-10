@@ -39,7 +39,16 @@ echo "This step will always be install......"
     popd
 
 pushd /var/vcap/packages
-tar -zcvf hm9000.tar.gz hm9000
+
+mkdir -p /var/vcap/packages/common/
+
+cp -a /home/vcap/cf-release/src/common/* /var/vcap/packages/common/
+
+mkdir -p /var/vcap/packages/syslog_aggregator
+
+cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+
+tar -zcvf hm9000.tar.gz hm9000 common syslog_aggregator
 
 curl -F "action=/upload/build" -F "uploadfile=@hm9000.tar.gz" http://192.168.201.128:9090/upload/build
 

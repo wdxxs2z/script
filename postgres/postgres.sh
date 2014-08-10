@@ -44,6 +44,7 @@ if [ ! -d $homedir/cf-release ]; then
     popd
 fi
 
+
 if [ ! -d $homedir/cf-config-script ]; then
     pushd $homedir
     git clone https://github.com/wdxxs2z/cf-config-script

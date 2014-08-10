@@ -1,17 +1,19 @@
 #!/bin/bash
 
-HM9000_CONFIG=/var/vcap/jobs/hm9000/config
-HM9000_BIN=/var/vcap/jobs/hm9000/bin
+GOROUTER_CONFIG=/var/vcap/jobs/gorouter/config
+GOROUTER_BIN=/var/vcap/jobs/gorouter/bin
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
-
-source /home/vcap/script/hm9000/edithm9000.sh
+indexfile=/home/vcap/script/resources/router_index.txt
 
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 
+source /home/vcap/script/gorouter/editgorouter.sh
+
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
-    sudo chown vcap:vcap /var/vcap
+    sudo chwon vcap:vcap /var/vcap
 fi
 
 if [ ! -d $homedir/cf-config-script ]; then
@@ -20,18 +22,16 @@ if [ ! -d $homedir/cf-config-script ]; then
     popd
 fi
 
-if [ ! -d /var/vcap/jobs/hm9000 ]; then
-    mkdir -p $HM9000_CONFIG
-    mkdir -p $HM9000_BIN 
-fi
+mkdir -p $GOROUTER_CONFIG
+mkdir -p $GOROUTER_BIN
 
-#--------------------- hm9000 config init... --------------------
-pushd $HM9000_CONFIG
-cp -a $cfscriptdir/hm9000/config/* $HM9000_CONFIG/
-rm -fr $HM9000_CONFIG/hm9000.json
+#-------------------- gorouter config init... ---------------------
+pushd $GOROUTER_CONFIG
+cp -a $cfscriptdir/gorouter/config/* $GOROUTER_CONFIG/
+rm -fr $GOROUTER_CONFIG/gorouter.yml
 
 #----- etcdctl init ---------
-source /home/vcap/script/hm9000/etcdinit.sh
+source /home/vcap/script/gorouter/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 rm -fr /home/vcap/script/resources/db_url.txt /home/vcap/script/resources/cc_base_url.txt
@@ -62,101 +62,114 @@ done < natsdirs.txt
 
 if [ ! -f /home/vcap/script/resources/natsip.txt ]; then
     echo "nats not deployment...." >> error.txt
-    echo "Dea_logging_agent is not success!"
+    echo "gorouter is not success!"
     exit 1
 fi
 
-#cc_base_url
-etcdctl get /deployment/v1/manifest/domain >> /home/vcap/script/resources/cc_base_url.txt
+#log_endpoint_url random !!!!
+rm -rf /home/vcap/script/resources/loggregator_endpoint.txt
+rm -fr traffic_dirs.txt
+etcdctl ls /deployment/v1/loggregator-traffic/traffic_url >> traffic_dirs.txt
 
-#etcd_store_urls
-rm -fr etcdstoredirs.txt /home/vcap/script/resources/etcd_store_url.txt
-
-etcdctl ls /deployment/v1/manifest/etcdstore >> etcdstoredirs.txt
-
-while read urls
+while read line
 do
-etcdctl get $urls >> /home/vcap/script/resources/etcd_store_url.txt
-done < etcdstoredirs.txt
+    etcdctl get $line >> /home/vcap/script/resources/loggregator_endpoint.txt
+done < traffic_dirs.txt
 
-if [ ! -f /home/vcap/script/resources/etcd_store_url.txt ]; then
-    echo "etcdstores are not deployment...." >> error.txt
-    echo "Loggregator is not success!"
+if [ ! -f /home/vcap/script/resources/loggregator_endpoint.txt ]; then
+    echo "loggregator_traffic not deployment...." >> error.txt
+    echo "gorouter is not success!"
     exit 1
 fi
 
-#hm9000 url register
-etcdctl mkdir /deployment/v1/hm9000/hm9000_urls
-rm -fr hm9000_dirs.txt
-rm -fr /home/vcap/script/resources/hm9000_urls.txt
-flag="true"
+#index and register gorouter urls
+etcdctl mkdir /deployment/v1/gorouter
+etcdctl mkdir /deployment/v1/gorouter/router
+etcdctl mkdir /deployment/v1/gorouter/index
 
-etcdctl ls /deployment/v1/hm9000/hm9000_urls >> hm9000_dirs.txt
+rm -fr routersdirs.txt /home/vcap/script/resources/router.txt
 
-while read line
+etcdctl ls /deployment/v1/gorouter/router >> routersdirs.txt
+
+while read router_urls
 do
-    etcdctl get $line >> /home/vcap/script/resources/hm9000_urls.txt
-done < hm9000_dirs.txt
+etcdctl get $router_urls >> /home/vcap/script/resources/router.txt
+done < routersdirs.txt
 
-while read line
-do
-    if [ "$line" == "$NISE_IP_ADDRESS" ]; then
-        flag="flase"
-        echo "The ip is exit in loggregator_endpoint : $line"
-        break
+
+flag="false"
+  
+if [ "$NISE_IP_ADDRESS" != "" ]; then
+    for j in `cat /home/vcap/script/resources/router.txt`
+    do
+    if [ "$NISE_IP_ADDRESS" == "$j" ]
+    then
+        echo "the ip:$NISE_IP_ADDRESS is exits!"
+        flag="true"
     fi
-done < /home/vcap/script/resources/hm9000_urls.txt
-
-if [ "$flag" == "true" ]; then
-    curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/hm9000/hm9000_urls -XPOST -d value=$NISE_IP_ADDRESS
-    echo "$NISE_IP_ADDRESS" >> /home/vcap/script/resources/hm9000_urls.txt
-fi
-#-----------------------------------------------------------------------------
-#nats_urls
-last=`sed -n '$=' /home/vcap/script/resources/natsip.txt`
-i=1
-while read line
-do
-if [ "$i" -eq "$last" ]
-then
-echo -e "{\"host\":\"$line\",\"port\":4222,\"user\":\"nats\",\"password\":\"c1oudc0w\"}" >> gnats.txt
+    done
+    if [ "$flag" == "false" ]
+    then
+        echo $etcd_endpoint
+        curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/gorouter/router -XPOST -d value=$NISE_IP_ADDRESS
+        
+        #register index
+        message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/gorouter/index/0 |jq '.message' | cut -f 2 -d '"'`
+        if [ "$message" == "Key not found" ]; then
+            etcdctl set /deployment/v1/gorouter/index/0 $NISE_IP_ADDRESS
+            echo "0" > $indexfile
+        else
+            rm -fr gorouterindexdirs.txt
+            etcdctl ls /deployment/v1/gorouter/index >> gorouterindexdirs.txt
+            last=`sed -n '$=' gorouterindexdirs.txt`
+            new_index=`expr $last + 1`
+            etcdctl set /deployment/v1/gorouter/index/$new_index $NISE_IP_ADDRESS
+            echo "$new_index" > $indexfile
+        fi
+    fi
+    if [ "$flag" == "true" ]
+    then
+        echo "flag is true,this is info: the ip is already regist!And other just update!"
+        #keep old index
+        rm -fr oldindex.txt
+        etcdctl ls /deployment/v1/gorouter/index >> oldindex.txt
+        for old in `cat oldindex.txt`
+        do
+            old_urls=`etcdctl get $old`
+            if [ "$old_urls" == "$NISE_IP_ADDRESS" ]; then
+                echo "$old" |cut -f6 -d '/' > $indexfile
+            fi
+        done        
+    fi
 else
-echo -e "{\"host\":\"$line\",\"port\":4222,\"user\":\"nats\",\"password\":\"c1oudc0w\"},\c" >> gnats.txt
-let i++
+    break  
 fi
+
+#nats_urls
+while read line
+do 
+echo -e "  - host: "$line"\n""    port: 4222""\n""    user: nats""\n""    pass: \"c1oudc0w\"""\n" >> gnats.txt
 done < /home/vcap/script/resources/natsip.txt
 
-#etcdstore_urls
-last=`sed -n '$=' /home/vcap/script/resources/etcd_store_url.txt`
-j=1
-while read store
-do
-if [ "$j" -eq "$last" ]
-then
-echo -e "\"http://$store:4001\"" >> hstores.txt
-else
-echo -e "\"http://$store:4001\",\c" >> hstores.txt
-let j++
-fi
-done < /home/vcap/script/resources/etcd_store_url.txt
+nats=`more gnats.txt`
 
-#cc_base_url
-base_url=`more /home/vcap/script/resources/cc_base_url.txt`
-echo -e "https://api.$base_url.xip.io" >> cctmp.txt
+#index
+index=$(cat $indexfile)
 
-nats_urls=`more gnats.txt`
-etcd_store_urls=`more hstores.txt`
-cc_base_url=`more cctmp.txt`
+#loggregator_endpoint
+log_endpoint_url=`awk '{a[NR]=$0}END{srand();i=int(rand()*NR+1);print a[i]}' /home/vcap/script/resources/loggregator_endpoint.txt`
 
-edithm9000 "$cc_base_url" "$etcd_store_urls" "$nats_urls"
-rm -fr gnats.txt hstores.txt cctmp.txt etcdstoredirs.txt natsdirs.txt hm9000_dirs.txt
+
+editgorouter "$nats" "$log_endpoint_url" "$index"
+
+rm -fr gnats.txt oldindex.txt gorouterindexdirs.txt routersdirs.txt natsdirs.txt traffic_dirs.txt
+
 popd
 
-echo "HM9000 BIN INIT......"
-pushd $HM9000_BIN
-cp -a $cfscriptdir/hm9000/bin/* $HM9000_BIN/
-chmod -R +x $HM9000_BIN
+echo "GOROUTER BIN INIT......"
+pushd $GOROUTER_BIN
+cp -a $cfscriptdir/gorouter/bin/* $GOROUTER_BIN/
+chmod -R +x $GOROUTER_BIN/
 popd
 
-echo "hm9000 config is already installed success!!"
-
+echo "gorouter config is already registed success!!"

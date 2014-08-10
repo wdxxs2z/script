@@ -67,6 +67,10 @@ domain=`more /home/vcap/script/mainfest |grep domain | cut -f 2 -d ' '`
 
 etcdctl set /deployment/v1/manifest/domain $domain
 
+cf_version=`more /home/vcap/script/mainfest |grep version | cut -f 2 -d ' '`
+
+etcdctl set /deployment/v1/manifest/version $cf_version
+
 echo $etcd_endpoint
 #--------------------- zone init ----------------------------
 rm -fr zonedirs.txt zonetarget.txt
@@ -150,5 +154,5 @@ do
 done
 
 
-rm -fr storedirs.txt storeurls.txt
+rm -fr storedirs.txt storeurls.txt zonedirs.txt zonetarget.txt
 
