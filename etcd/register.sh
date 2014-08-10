@@ -15,7 +15,7 @@ NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d
 
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
-    sudo chwon vcap:vcap /var/vcap
+    sudo chown vcap:vcap /var/vcap
 fi
 
 if [ ! -d $homedir/cf-config-script ]; then
