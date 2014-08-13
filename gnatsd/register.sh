@@ -17,6 +17,8 @@ if [ ! -d /var/vcap ]; then
     sudo chown vcap:vcap /var/vcap
 fi
 
+mkdir -p $GNATSD_CONFIG
+mkdir -p $GNATSD_BIN
 #--------------------- etcd init --------------------------
 source /home/vcap/script/gnatsd/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH

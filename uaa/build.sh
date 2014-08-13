@@ -102,12 +102,11 @@ export MAVEN_OPTS='-Xmx1g -XX:MaxPermSize=512m'
 
 #build cloud foundry war
 cd $homedir/cf-release/src/uaa
-mvn clean
-mvn -U -e -B package -DskipTests=true -Ddot.git.directory=/home/vcap/cf-release/src/uaa/.git
+./gradlew assemble
 cp uaa/target/cloudfoundry-identity-uaa-*.war ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war
 
-#remove build resources
-mvn clean
+#clean build data
+./gradlew clean
 
 #clean up - so we don't transfer files we don't need
 #cd ${BUILD_DIR}
