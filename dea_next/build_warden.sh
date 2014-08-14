@@ -36,8 +36,9 @@ echo "This step will always be install......"
     	echo "Setup git clone warden 1828c6f56f"
         git clone https://github.com/cloudfoundry/warden
    	cd warden
-  	git checkout 1828c6f56f
-	git submodule update --init 
+	git submodule update --init
+        git pull origin master
+        git checkout 64683f4b682dd3a2fcaed37d83d110cef12fc5b3
 	rm -fr warden/config/linux.yml
  	cp -a $cfscriptdir/dea_next/config/warden.yml warden/config/linux.yml
         cp -a $cfscriptdir/dea_next/config/warden.yml $WARDEN_CONF_DIR
@@ -48,9 +49,9 @@ echo "This step will always be install......"
     popd
 
 pushd /var/vcap/packages
-tar -zcvf warden.tar.gz warden
+tar -zcf warden.tar.gz warden
 
-curl -F "action=/upload/build" -F "uploadfile=@warden.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@warden.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr warden.tar.gz
 popd

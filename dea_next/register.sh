@@ -35,13 +35,26 @@ mkdir -p /var/vcap/data/warden/depot
 
 cp -a $cfscriptdir/dea_next/config/warden.yml $WARDEN_CONF_DIR
 
-if [[ $cgroup != $cgroup2 ]]; 
+if [ ! -f /etc/issue ]
 then
-    sudo echo "GRUB_CMDLINE_LINUX=\"cgroup_enable=memory swapaccount=1\"" >> /etc/default/grub 
-    sudo /usr/sbin/update-grub
+  echo "/etc/issue doesn't exist; cannot determine distribution"
+  exit 1
 fi
 
-echo "Warden already install ok! Please reboot your computer."
+if grep -q -i ubuntu /etc/issue
+then
+    if [[ $cgroup != $cgroup2 ]];
+    then
+        sudo echo "GRUB_CMDLINE_LINUX=\"cgroup_enable=memory swapaccount=1\"" >> /etc/default/grub
+        sudo /usr/sbin/update-grub
+    fi
+    echo "Warden already install ok! Please reboot your computer."  
+fi
+
+if grep -q -i centos /etc/issue
+then
+  echo "centos system is not support refesh grub"
+fi
 
 #************************* dea_next ****************************************
 pushd $DEA_NEXT_CONFIG

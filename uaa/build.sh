@@ -103,7 +103,7 @@ export MAVEN_OPTS='-Xmx1g -XX:MaxPermSize=512m'
 #build cloud foundry war
 cd $homedir/cf-release/src/uaa
 ./gradlew assemble
-cp uaa/target/cloudfoundry-identity-uaa-*.war ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war
+cp uaa/build/libs/cloudfoundry-identity-uaa-*.war ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war
 
 #clean build data
 ./gradlew clean

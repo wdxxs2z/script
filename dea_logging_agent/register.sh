@@ -41,6 +41,13 @@ pushd /home/vcap/etcdctl
 
 popd
 
+mkdir -p $LOG_DEA_AGENT_CONFIG
+mkdir -p $LOG_DEA_AGENT_BIN
+
+#dea_loggregator_agent config init
+cp -a $cfscriptdir/dea_logging_agent/config/* $LOG_DEA_AGENT_CONFIG/
+rm -fr $LOG_DEA_AGENT_CONFIG/dea_logging_agent.json
+
 #nats-urls
 rm -fr natsdirs.txt /home/vcap/script/resources/natsip.txt
 
