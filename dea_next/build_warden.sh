@@ -8,6 +8,9 @@ homedir=/home/vcap
 cfdir=/home/vcap/cf-release
 cfscriptdir=/home/vcap/cf-config-script
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 echo "---------------Warden-------------------"
 
 if ! (which ruby); then
@@ -51,7 +54,7 @@ echo "This step will always be install......"
 pushd /var/vcap/packages
 tar -zcf warden.tar.gz warden
 
-curl -F "action=/upload/build" -F "uploadfile=@warden.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@warden.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr warden.tar.gz
 popd

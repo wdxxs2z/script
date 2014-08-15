@@ -9,6 +9,8 @@ export PATH=/var/vcap/packages/loggregators/bin:$PATH
 export GOPATH=/var/vcap/packages/loggregators
 
 homedir=/home/vcap
+export PATH=/var/vcap/packages/etcd/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
@@ -70,13 +72,13 @@ echo "This step will always be install......"
     cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
     
     tar -zcf loggregator.tar.gz loggregator common syslog_aggregator
-    curl -F "action=/upload/build" -F "uploadfile=@loggregator.tar.gz" http://192.168.201.134:9090/upload/build
+    curl -F "action=/upload/build" -F "uploadfile=@loggregator.tar.gz" http://$RESOURCE_URL/upload/build
     
     tar -zcf loggregator_trafficcontroller.tar.gz loggregator_trafficcontroller common syslog_aggregator
-    curl -F "action=/upload/build" -F "uploadfile=@loggregator_trafficcontroller.tar.gz" http://192.168.201.134:9090/upload/build
+    curl -F "action=/upload/build" -F "uploadfile=@loggregator_trafficcontroller.tar.gz" http://$RESOURCE_URL/upload/build
     
     tar -zcf dea_logging_agent.tar.gz dea_logging_agent common syslog_aggregator
-    curl -F "action=/upload/build" -F "uploadfile=@dea_logging_agent.tar.gz" http://192.168.201.134:9090/upload/build
+    curl -F "action=/upload/build" -F "uploadfile=@dea_logging_agent.tar.gz" http://$RESOURCE_URL/upload/build
     
     rm -fr loggregator.tar.gz loggregator_trafficcontroller.tar.gz dea_logging_agent.tar.gz
        

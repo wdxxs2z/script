@@ -3,6 +3,9 @@
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 source /home/vcap/script/nginx/edit_nginx.sh
 source /home/vcap/script/nginx/etcdinit.sh
 
@@ -25,8 +28,6 @@ mkdir -p $NGINX_CONFIG
 mkdir -p $NGINX_BIN
 
 #------------------------- Nginx --------------------------------
-RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
-
 pushd /var/vcap/packages
 
 if [ ! -d nginx ]; then

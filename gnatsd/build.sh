@@ -13,6 +13,8 @@ export PATH=/var/vcap/packages/gnatsd/bin:$PATH
 export GOPATH=/var/vcap/packages/gnatsd
 
 homedir=/home/vcap
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
@@ -57,7 +59,7 @@ cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggr
 
 tar -zcf gnatsd.tar.gz gnatsd common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@gnatsd.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@gnatsd.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr gnatsd.tar.gz
 

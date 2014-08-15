@@ -8,6 +8,8 @@ homedir=/home/vcap
 export PATH=/var/vcap/packages/ruby/bin:$PATH
 export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 #----------------------- git init -----------------------
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
@@ -39,24 +41,24 @@ fi
 
 if [ ! -f $BUILD_DIR/maven/apache-maven-3.1.1-bin.tar.gz ]; then
     mkdir -p $BUILD_DIR/maven/
-    wget http://192.168.201.134:9090/packages/maven/apache-maven-3.1.1-bin.tar.gz
+    wget http://$RESOURCE_URL/packages/maven/apache-maven-3.1.1-bin.tar.gz
     mv apache-maven-3.1.1-bin.tar.gz $BUILD_DIR/maven/apache-maven-3.1.1-bin.tar.gz
 fi
 
 if [ ! -f $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz ]; then
-    wget http://192.168.201.134:9090/packages/uaa/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
+    wget http://$RESOURCE_URL/packages/uaa/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
 fi
 
 if [ ! -f $BUILD_DIR/openjdk-1.7.0_51.tar.gz ]; then
-    wget http://192.168.201.134:9090/packages/uaa/openjdk-1.7.0_51.tar.gz
+    wget http://$RESOURCE_URL/packages/uaa/openjdk-1.7.0_51.tar.gz
 fi
 
 if [ ! -f $BUILD_DIR/apache-tomcat-7.0.52.tar.gz ]; then
-    wget http://192.168.201.134:9090/packages/uaa/apache-tomcat-7.0.52.tar.gz
+    wget http://$RESOURCE_URL/packages/uaa/apache-tomcat-7.0.52.tar.gz
 fi
 
 if [ ! -f ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war ]; then
-    wget http://192.168.201.134:9090/packages/uaa/cloudfoundry-identity-varz-1.0.2.war
+    wget http://$RESOURCE_URL/packages/uaa/cloudfoundry-identity-varz-1.0.2.war
     mv cloudfoundry-identity-varz-1.0.2.war ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war
 fi
 
@@ -161,7 +163,7 @@ cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggr
 
 tar -zcf uaa.tar.gz uaa common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@uaa.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@uaa.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr uaa.tar.gz
 popd

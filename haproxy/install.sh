@@ -9,8 +9,8 @@ HAPROXY_CONFIG=/var/vcap/jobs/haproxy/config
 HAPROXY_BIN=/var/vcap/jobs/haproxy/bin
 
 source /home/vcap/script/haproxy/etcdinit.sh
+
 export PATH=/home/vcap/etcdctl/bin:$PATH
-export GOPATH=/home/vcap/etcdctl
 
 source /home/vcap/script/haproxy/edit_haproxy.sh
 
@@ -32,20 +32,6 @@ if [ ! -d /var/vcap/jobs/haproxy ]; then
     mkdir -p $HAPROXY_CONFIG
     mkdir -p $HAPROXY_BIN
 fi
-
-pushd /home/vcap/
-
-git clone https://github.com/coreos/etcdctl
-git checkout 6dcd7c2e57
-git submodule update --init
-
-popd
-
-pushd /home/vcap/etcdctl
-
-./build
-
-popd
 
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 #------------------------ Haproxy -------------------------------

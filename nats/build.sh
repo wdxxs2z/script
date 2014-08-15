@@ -5,7 +5,8 @@ export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
-
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 #--------------- git clone ----------------------
 if ! (which ruby); then
     echo "Ruby is not or error setup,please install ruby......"
@@ -47,7 +48,7 @@ popd
 pushd /var/vcap/packages
 
     tar -zcf nats.tar.gz nats
-    curl -F "action=/upload/build" -F "uploadfile=@nats.tar.gz" http://192.168.201.134:9090/upload/build
+    curl -F "action=/upload/build" -F "uploadfile=@nats.tar.gz" http://$RESOURCE_URL/upload/build
     
 popd
 

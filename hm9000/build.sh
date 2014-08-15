@@ -11,6 +11,9 @@ export GOPATH=/var/vcap/packages/hm9000
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
@@ -48,9 +51,9 @@ mkdir -p /var/vcap/packages/syslog_aggregator
 
 cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
 
-tar -zcvf hm9000.tar.gz hm9000 common syslog_aggregator
+tar -zcf hm9000.tar.gz hm9000 common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@hm9000.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@hm9000.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr hm9000.tar.gz
 popd

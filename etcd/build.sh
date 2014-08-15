@@ -9,7 +9,8 @@ export PATH=/var/vcap/packages/etcd/bin:$PATH
 export GOPATH=/var/vcap/packages/etcd
 
 homedir=/home/vcap
-
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 echo "------------ETCD---------------"
 
 if [ ! -d /var/vcap ]; then
@@ -51,7 +52,7 @@ cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggr
 
 tar -zcf etcd.tar.gz etcd common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@etcd.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@etcd.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr etcd.tar.gz
 

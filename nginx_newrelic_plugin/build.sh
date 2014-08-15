@@ -6,6 +6,9 @@ export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
@@ -26,7 +29,7 @@ if [ ! -d /var/vcap/packages/nginx ]; then
 fi
 
 if [ ! -f nginx/newrelic_nginx_agent.tar.gz ]; then
-    wget -P nginx/ http://192.168.201.134:9090/packages/nginx/newrelic_nginx_agent.tar.gz
+    wget -P nginx/ http://$RESOURCE_URL/packages/nginx/newrelic_nginx_agent.tar.gz
 fi
 
 if [ ! -d /var/vcap/packages/nginx_newrelic_plugin ]; then
@@ -46,7 +49,7 @@ pushd /var/vcap/packages/
 
 tar -zcf nginx_newrelic_plugin.tar.gz nginx_newrelic_plugin
 
-curl -F "action=/upload/build" -F "uploadfile=@nginx_newrelic_plugin.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@nginx_newrelic_plugin.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr nginx_newrelic_plugin.tar.gz
 

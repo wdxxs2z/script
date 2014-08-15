@@ -1,4 +1,5 @@
-domain 192.168.64.146
+domain 192.168.201.134
 etcd 192.168.64.1 192.168.64.146 192.168.64.133
 zone default
-version f5a2781
+version 8cf35826fe6cc1c193d9ecf4bd0fa6fae4c5cba9
+resourceurl 192.168.201.134:9090

@@ -11,6 +11,9 @@ export GOPATH=/var/vcap/packages/gorouter
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 echo "------------GOROUTER---------------"
 
 if [ ! -d /var/vcap ]; then
@@ -52,7 +55,7 @@ cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggr
 
 tar -zcf gorouter.tar.gz gorouter common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@gorouter.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@gorouter.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr gorouter.tar.gz
 popd

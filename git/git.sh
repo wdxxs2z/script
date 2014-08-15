@@ -1,6 +1,8 @@
 #!/bin/bash
 
 homedir=/home/vcap
+export PATH=/var/vcap/packages/etcd/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
@@ -11,8 +13,7 @@ mkdir -p /var/vcap/packages/git
 
 pushd /var/vcap/packages/git
 
-wget http://blob.cfblob.com/rest/objects/4e4e78bca61e121204e4e86eebe59104fff12d7e49c6
-mv 4e4e78bca61e121204e4e86eebe59104fff12d7e49c6 git-1.7.11.2.tar.gz
+wget http://$RESOURCE_URL/packages/git/git-1.7.11.2.tar.gz
 
 tar xzf git-1.7.11.2.tar.gz
 

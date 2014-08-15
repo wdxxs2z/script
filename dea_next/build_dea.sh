@@ -14,6 +14,10 @@ export GOPATH=/var/vcap/packages/dea_next/go
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
+
 echo "------------Dea_next---------------"
 if ! (which ruby); then
     echo "Ruby is not or error setup,please install ruby......"
@@ -72,7 +76,7 @@ cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggr
 
 tar -zcf dea_next.tar.gz dea_next common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@dea_next.tar.gz" http://192.168.201.134:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@dea_next.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr dea_next.tar.gz
 popd
