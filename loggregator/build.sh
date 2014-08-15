@@ -78,11 +78,12 @@ echo "This step will always be install......"
     tar -zcf dea_logging_agent.tar.gz dea_logging_agent common syslog_aggregator
     curl -F "action=/upload/build" -F "uploadfile=@dea_logging_agent.tar.gz" http://192.168.201.134:9090/upload/build
     
-    rm -fr loggregator.tar.gz loggregator_trafficcontroller.tar.gz dea_logging_agent.tar.gz loggregators
+    rm -fr loggregator.tar.gz loggregator_trafficcontroller.tar.gz dea_logging_agent.tar.gz
        
     popd
-    
+ 
     popd
+    rm -fr /var/vcap/packages/loggregators
 
 echo "Loggregator install success!!"
 

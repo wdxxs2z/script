@@ -55,9 +55,9 @@ mkdir -p /var/vcap/packages/syslog_aggregator
 
 cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
 
-tar -zcvf gnatsd.tar.gz gnatsd common syslog_aggregator
+tar -zcf gnatsd.tar.gz gnatsd common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@gnatsd.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@gnatsd.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr gnatsd.tar.gz
 

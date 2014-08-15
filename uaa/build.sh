@@ -39,24 +39,24 @@ fi
 
 if [ ! -f $BUILD_DIR/maven/apache-maven-3.1.1-bin.tar.gz ]; then
     mkdir -p $BUILD_DIR/maven/
-    wget http://192.168.201.128:9090/packages/maven/apache-maven-3.1.1-bin.tar.gz
+    wget http://192.168.201.134:9090/packages/maven/apache-maven-3.1.1-bin.tar.gz
     mv apache-maven-3.1.1-bin.tar.gz $BUILD_DIR/maven/apache-maven-3.1.1-bin.tar.gz
 fi
 
 if [ ! -f $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz ]; then
-    wget http://192.168.201.128:9090/packages/uaa/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
+    wget http://192.168.201.134:9090/packages/uaa/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
 fi
 
 if [ ! -f $BUILD_DIR/openjdk-1.7.0_51.tar.gz ]; then
-    wget http://192.168.201.128:9090/packages/uaa/openjdk-1.7.0_51.tar.gz
+    wget http://192.168.201.134:9090/packages/uaa/openjdk-1.7.0_51.tar.gz
 fi
 
 if [ ! -f $BUILD_DIR/apache-tomcat-7.0.52.tar.gz ]; then
-    wget http://192.168.201.128:9090/packages/uaa/apache-tomcat-7.0.52.tar.gz
+    wget http://192.168.201.134:9090/packages/uaa/apache-tomcat-7.0.52.tar.gz
 fi
 
 if [ ! -f ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war ]; then
-    wget http://192.168.201.128:9090/packages/uaa/cloudfoundry-identity-varz-1.0.2.war
+    wget http://192.168.201.134:9090/packages/uaa/cloudfoundry-identity-varz-1.0.2.war
     mv cloudfoundry-identity-varz-1.0.2.war ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war
 fi
 
@@ -70,7 +70,7 @@ bundle package --all
 
 #unpack Maven
 cd ${BUILD_DIR}
-tar zxvf maven/apache-maven-3.1.1-bin.tar.gz
+tar zxf maven/apache-maven-3.1.1-bin.tar.gz
 export MAVEN_HOME=${BUILD_DIR}/apache-maven-3.1.1
 
 # Make sure we can see uname
@@ -80,12 +80,12 @@ export PATH=$PATH:/bin:/usr/bin
 if [ `uname` = "Darwin" ]; then
   mkdir -p java
   cd java
-  tar zxvf ../uaa/openjdk-1.7.0-u40-unofficial-macosx-x86_64-bundle.tgz --exclude="._*"
+  tar -zxf ../uaa/openjdk-1.7.0-u40-unofficial-macosx-x86_64-bundle.tgz --exclude="._*"
   export JAVA_HOME=${BUILD_DIR}/java/Contents/Home
 elif [ `uname` = "Linux" ]; then
   mkdir -p java
   cd java
-  tar zxvf $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
+  tar -zxf $BUILD_DIR/openjdk-1.7.0-u40-unofficial-linux-amd64.tgz
   export JAVA_HOME=${BUILD_DIR}/java
 else
   if [ ! -d $JAVA_HOME ]; then
@@ -102,10 +102,14 @@ export MAVEN_OPTS='-Xmx1g -XX:MaxPermSize=512m'
 
 #build cloud foundry war
 cd $homedir/cf-release/src/uaa
+#mvn clean
 ./gradlew assemble
+#mvn -U -e -B package -DskipTests=true -Ddot.git.directory=/home/vcap/cf-release/src/uaa/.git
+#cp uaa/target/cloudfoundry-identity-uaa-*.war ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war
 cp uaa/build/libs/cloudfoundry-identity-uaa-*.war ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war
 
-#clean build data
+#remove build resources
+#mvn clean
 ./gradlew clean
 
 #clean up - so we don't transfer files we don't need
@@ -126,11 +130,11 @@ cd /var/vcap/packages/uaa
 rm -fr /var/vcap/packages/uaa/*
 
 mkdir -p  jdk
-tar zxvf $BUILD_DIR/openjdk-1.7.0_51.tar.gz -C jdk
+tar -zxf $BUILD_DIR/openjdk-1.7.0_51.tar.gz -C jdk
 
 cd /var/vcap/packages/uaa
 
-tar zxvf $BUILD_DIR/apache-tomcat-7.0.52.tar.gz
+tar -zxf $BUILD_DIR/apache-tomcat-7.0.52.tar.gz
 
 mv apache-tomcat-7.0.52 tomcat
 
@@ -155,9 +159,9 @@ mkdir -p /var/vcap/packages/syslog_aggregator
 
 cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
 
-tar -zcvf uaa.tar.gz uaa common syslog_aggregator
+tar -zcf uaa.tar.gz uaa common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@uaa.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@uaa.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr uaa.tar.gz
 popd

@@ -71,6 +71,10 @@ cf_version=`more /home/vcap/script/mainfest |grep version | cut -f 2 -d ' '`
 
 etcdctl set /deployment/v1/manifest/version $cf_version
 
+resource_url=`more /home/vcap/script/mainfest |grep resourceurl | cut -f 2 -d ' '`
+
+etcdctl set /deployment/v1/manifest/resourceurl $resource_url
+
 echo $etcd_endpoint
 #--------------------- zone init ----------------------------
 rm -fr zonedirs.txt zonetarget.txt
@@ -110,49 +114,49 @@ do
 done
 
 #--------------------- etcdstore init -----------------------
-rm -fr storedirs.txt storeurls.txt
+#rm -fr storedirs.txt storeurls.txt
 
-etcds=`more /home/vcap/script/mainfest |grep etcd`
+#etcds=`more /home/vcap/script/mainfest |grep etcd`
 
-etcdctl mkdir /deployment/v1/manifest/etcdstore
+#etcdctl mkdir /deployment/v1/manifest/etcdstore
 
-etcdctl ls /deployment/v1/manifest/etcdstore >> storedirs.txt
+#etcdctl ls /deployment/v1/manifest/etcdstore >> storedirs.txt
 
-while read urls
-do
-etcdctl get $urls >> storeurls.txt
-done < storedirs.txt
+#while read urls
+#do
+#etcdctl get $urls >> storeurls.txt
+#done < storedirs.txt
 
-if [ ! -f storeurls.txt ]; then
-    touch storeurls.txt
-fi
+#if [ ! -f storeurls.txt ]; then
+#    touch storeurls.txt
+#fi
 
-storeurls=`more storeurls.txt`
+#storeurls=`more storeurls.txt`
 
-flag="false"
-i=2
-while((1==1))  
-do  
-    split=`echo $etcds |cut -d " " -f$i`  
-    if [ "$split" != "" ]; then
-    for j in `cat storeurls.txt`
-    do
-    if [ "$split" == "$j" ]
-    then
-        echo "the ip:$split is exits!"
-        flag="true"
-    fi
-    done
-    if [ "$flag" == "false" ]
-    then
-        curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/manifest/etcdstore -XPOST -d value=$split
-    fi 
-    ((i++))
-    else
-        break  
-    fi  
-done
-
+#flag="false"
+#i=2
+#while((1==1))  
+#do  
+#    split=`echo $etcds |cut -d " " -f$i`  
+#    if [ "$split" != "" ]; then
+#    for j in `cat storeurls.txt`
+#    do
+#    if [ "$split" == "$j" ]
+#    then
+#        echo "the ip:$split is exits!"
+#        flag="true"
+#    fi
+#    done
+#    if [ "$flag" == "false" ]
+#    then
+#        curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/manifest/etcdstore -XPOST -d value=$split
+#    fi 
+#    ((i++))
+#    else
+#        break  
+#    fi  
+#done
+#
 
 rm -fr storedirs.txt storeurls.txt zonedirs.txt zonetarget.txt
 

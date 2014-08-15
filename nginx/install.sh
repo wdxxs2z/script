@@ -4,22 +4,16 @@ cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
 source /home/vcap/script/nginx/edit_nginx.sh
+source /home/vcap/script/nginx/etcdinit.sh
 
 NGINX_CONFIG=/var/vcap/jobs/cloud_controller_ng/config
 NGINX_BIN=/var/vcap/jobs/cloud_controller_ng/bin
 
 #-------------------------- git init ----------------------------
-
-if [ ! -d $homedir/cf-release ]; then
-    echo "No cf-release dir exit,Please updtae first." >> errors.txt
-    exit 1
-fi
-
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
 fi
-
 
 if [ ! -d $homedir/cf-config-script ]; then
     pushd $homedir
@@ -27,10 +21,12 @@ if [ ! -d $homedir/cf-config-script ]; then
     popd
 fi
 
-    mkdir -p $NGINX_CONFIG
-    mkdir -p $NGINX_BIN
+mkdir -p $NGINX_CONFIG
+mkdir -p $NGINX_BIN
 
 #------------------------- Nginx --------------------------------
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 pushd /var/vcap/packages
 
 if [ ! -d nginx ]; then
@@ -38,23 +34,23 @@ if [ ! -d nginx ]; then
 fi
 
 if [ ! -f nginx/pcre-8.34.tar.gz ]; then
-    wget -P nginx/ http://192.168.201.128:9090/packages/nginx/pcre-8.34.tar.gz
+    wget -P nginx/ http://$RESOURCE_URL/packages/nginx/pcre-8.34.tar.gz
 fi
 
 if [ ! -f nginx/headers-more-v0.25.tgz ]; then
-    wget -P nginx/ http://192.168.201.128:9090/packages/nginx/headers-more-v0.25.tgz
+    wget -P nginx/ http://$RESOURCE_URL/packages/nginx/headers-more-v0.25.tgz
 fi
 
 if [ ! -f nginx/nginx-upload-module-2.2.tar.gz ]; then
-    wget -P nginx/ http://192.168.201.128:9090/packages/nginx/nginx-upload-module-2.2.tar.gz
+    wget -P nginx/ http://$RESOURCE_URL/packages/nginx/nginx-upload-module-2.2.tar.gz
 fi
 
 if [ ! -f nginx/upload_module_put_support.patch ]; then
-    cp -a /home/vcap/cf-release/src/nginx/upload_module_put_support.patch nginx/
+    wget -P nginx/ http://$RESOURCE_URL/packages/nginx/upload_module_put_support.patch
 fi
 
 if [ ! -f nginx/nginx-1.4.5.tar.gz ]; then
-    wget -P nginx/ http://192.168.201.128:9090/packages/nginx/nginx-1.4.5.tar.gz
+    wget -P nginx/ http://$RESOURCE_URL/packages/nginx/nginx-1.4.5.tar.gz
 fi
 
 echo "Extracting pcre..."

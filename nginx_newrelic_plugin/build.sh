@@ -26,14 +26,14 @@ if [ ! -d /var/vcap/packages/nginx ]; then
 fi
 
 if [ ! -f nginx/newrelic_nginx_agent.tar.gz ]; then
-    wget -P nginx/ http://192.168.201.128:9090/packages/nginx/newrelic_nginx_agent.tar.gz
+    wget -P nginx/ http://192.168.201.134:9090/packages/nginx/newrelic_nginx_agent.tar.gz
 fi
 
 if [ ! -d /var/vcap/packages/nginx_newrelic_plugin ]; then
     mkdir -p /var/vcap/packages/nginx_newrelic_plugin
 fi
 
-tar zxvf nginx/newrelic_nginx_agent.tar.gz
+tar zxf nginx/newrelic_nginx_agent.tar.gz
 cp -a newrelic_nginx_agent/* /var/vcap/packages/nginx_newrelic_plugin/
 
 pushd /var/vcap/packages/nginx_newrelic_plugin
@@ -44,9 +44,9 @@ popd
 
 pushd /var/vcap/packages/
 
-tar -zcvf nginx_newrelic_plugin.tar.gz nginx_newrelic_plugin
+tar -zcf nginx_newrelic_plugin.tar.gz nginx_newrelic_plugin
 
-curl -F "action=/upload/build" -F "uploadfile=@nginx_newrelic_plugin.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@nginx_newrelic_plugin.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr nginx_newrelic_plugin.tar.gz
 

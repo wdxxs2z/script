@@ -1,6 +1,5 @@
 #!/bin/bash
-
-COMPONENT=cloud_controller_worker
+COMPONENT=loggregator
 
 source /home/vcap/script/$COMPONENT/register.sh
 
@@ -12,12 +11,7 @@ if [ ! -d /var/vcap/packages ]; then
     sudo chown -R vcap:vcap /var/vcap/packages 
 fi
 
-if [ -d $PACKAGES_DIR/cloud_controller_ng ]; then
-    echo "cloud_controller_ng is already exit,not install,just register $COMPONENT"
-    exit 1
-fi
-
-wget -c -r -nd -P $PACKAGES_DIR http://$RESOURCE_URL/build/cloud_controller_ng.tar.gz
+wget -c -r -nd -P $PACKAGES_DIR http://$RESOURCE_URL/build/$COMPONENT.tar.gz
 
 if [ ! -f $PACKAGES_DIR/$COMPONENT.tar.gz ]; then
     echo "This is an error $COMPONENT is not download correctly,please check your fileserver connect right."
@@ -29,3 +23,4 @@ pushd $PACKAGES_DIR
     tar -xf $COMPONENT.tar 
     rm -fr $COMPONENT.tar.gz $COMPONENT.tar
 popd
+

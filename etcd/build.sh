@@ -41,9 +41,17 @@ popd
 
 pushd /var/vcap/packages
 
-tar -zcvf etcd.tar.gz etcd
+mkdir -p /var/vcap/packages/common/
 
-curl -F "action=/upload/build" -F "uploadfile=@etcd.tar.gz" http://192.168.201.128:9090/upload/build
+cp -a /home/vcap/cf-release/src/common/* /var/vcap/packages/common/
+
+mkdir -p /var/vcap/packages/syslog_aggregator
+
+cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+
+tar -zcf etcd.tar.gz etcd common syslog_aggregator
+
+curl -F "action=/upload/build" -F "uploadfile=@etcd.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr etcd.tar.gz
 

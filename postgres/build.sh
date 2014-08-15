@@ -48,7 +48,7 @@ fi
 
 pushd /var/vcap/packages
 
-wget http://192.168.201.128:9090/packages/postgres/postgres-9.0.3-1.amd64.tar.gz
+wget http://192.168.201.134:9090/packages/postgres/postgres-9.0.3-1.amd64.tar.gz
 
 mkdir -p /var/vcap/packages/common/
 
@@ -58,11 +58,11 @@ mkdir -p /var/vcap/packages/syslog_aggregator
 
 cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
 
-tar xzf postgres-9.0.3-1.amd64.tar.gz -C postgres
+tar -zxf postgres-9.0.3-1.amd64.tar.gz -C postgres
 
-tar -zcvf postgres.tar.gz postgres common syslog_aggregator
+tar -zcf postgres.tar.gz postgres common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@postgres.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@postgres.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr postgres-9.0.3-1.amd64.tar.gz postgres.tar.gz
 

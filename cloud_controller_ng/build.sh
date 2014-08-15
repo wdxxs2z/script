@@ -40,7 +40,7 @@ pushd /var/vcap/packages
 
 # libpq
 if [ ! -f postgresql-9.0.3.tar.gz ]; then   
-    wget http://192.168.201.128:9090/packages/postgres/postgresql-9.0.3.tar.gz
+    wget http://192.168.201.134:9090/packages/postgres/postgresql-9.0.3.tar.gz
 fi
 
 mkdir -p /var/vcap/packages/libpq
@@ -70,12 +70,12 @@ pushd /var/vcap/packages
 
 #client-mysql
 if [ ! -f client-5.1.62-rel13.3-435-Linux-x86_64.tar.gz ]; then
-    wget http://192.168.201.128:9090/packages/mysql/client-5.1.62-rel13.3-435-Linux-x86_64.tar.gz
+    wget http://192.168.201.134:9090/packages/mysql/client-5.1.62-rel13.3-435-Linux-x86_64.tar.gz
 fi
 
 VERSION=5.1.62-rel13.3-435-Linux-x86_64
 # Percona binary Linux build - minor change
-tar zxvf client-$VERSION.tar.gz
+tar zxf client-$VERSION.tar.gz
 
 cd client-$VERSION
 for x in bin include lib; do
@@ -88,7 +88,7 @@ popd
 pushd /var/vcap/packages
 #sqlite
 if [ ! -f sqlite-autoconf-3070500.tar.gz ]; then
-    wget http://192.168.201.128:9090/packages/sqlite/sqlite-autoconf-3070500.tar.gz
+    wget http://192.168.201.134:9090/packages/sqlite/sqlite-autoconf-3070500.tar.gz
 fi
 
 tar xzf sqlite-autoconf-3070500.tar.gz
@@ -126,9 +126,9 @@ mkdir -p /var/vcap/packages/syslog_aggregator
 
 cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
 
-tar -zcvf cloud_controller_ng.tar.gz cloud_controller_ng libpq mysqlclient sqlite common syslog_aggregator
+tar -zcf cloud_controller_ng.tar.gz cloud_controller_ng libpq mysqlclient sqlite common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@cloud_controller_ng.tar.gz" http://192.168.201.128:9090/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@cloud_controller_ng.tar.gz" http://192.168.201.134:9090/upload/build
 
 rm -fr cloud_controller_ng.tar.gz sqlite-autoconf-3070500.tar.gz client-5.1.62-rel13.3-435-Linux-x86_64.tar.gz postgresql-9.0.3.tar.gz
 
