@@ -67,8 +67,8 @@ sudo usermod -a -G adm syslog
 #runit
 pushd /home/vcap/
 wget http://smarden.org/runit/runit-2.1.2.tar.gz
-tar -xpf runit-2.1.2.tar
-rm runit-2.1.2.tar
+tar -zxf runit-2.1.2.tar.gz
+rm runit-2.1.2.tar.gz
 cd admin/runit-2.1.2
 sudo ./package/install
 popd
