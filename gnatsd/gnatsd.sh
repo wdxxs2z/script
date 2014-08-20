@@ -38,10 +38,8 @@ if [ ! -d $homedir/cf-config-script ]; then
     popd
 fi
 
-if [ ! -d /var/vcap/jobs/nats ]; then
-    mkdir -p $GNATSD_CONFIG
-    mkdir -p $GNATSD_BIN
-fi
+mkdir -p $GNATSD_CONFIG/
+mkdir -p $GNATSD_BIN/
 
 echo "This step will always be install......"
     mkdir -p /var/vcap/packages

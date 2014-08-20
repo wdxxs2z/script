@@ -164,6 +164,7 @@ peer=`more etcdstore.txt`
 
 rm -fr /var/vcap/jobs/etcd/bin/etcd_ctl
 editetcd "$NISE_IP_ADDRESS" "$index" "$peer"
+chmod +x /var/vcap/jobs/etcd/bin/etcd_ctl
 
 rm -fr etcdindexdirs.txt oldindex.txt etcdurls.txt etcdindexdirs.txt etcdurl.txt etcdstore.txt etcddir.txt etcddirs.txt
 popd

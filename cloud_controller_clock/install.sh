@@ -3,6 +3,7 @@
 COMPONENT=cloud_controller_clock
 
 source /home/vcap/script/$COMPONENT/register.sh
+source /home/vcap/script/monit/install.sh $COMPONENT
 
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 PACKAGES_DIR=/var/vcap/packages

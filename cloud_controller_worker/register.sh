@@ -192,6 +192,7 @@ popd
 pushd $CLOUD_CONTROLLER_WORKER_BIN
 
 cp -a $cfscriptdir/cloud_controller_worker/bin/* $CLOUD_CONTROLLER_WORKER_BIN/
+chmod -R +x $CLOUD_CONTROLLER_WORKER_BIN/ 
 
 popd
 

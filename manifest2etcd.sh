@@ -75,6 +75,14 @@ resource_url=`more /home/vcap/script/mainfest |grep resourceurl | cut -f 2 -d ' 
 
 etcdctl set /deployment/v1/manifest/resourceurl $resource_url
 
+monitserver=`more /home/vcap/script/mainfest |grep monitserver | cut -f 2 -d ' '`
+
+etcdctl set /deployment/v1/manifest/monitserver $monitserver
+
+monitacl=`more /home/vcap/script/mainfest |grep monitacl | cut -f 2 -d ' '`
+
+etcdctl set /deployment/v1/manifest/monitacl $monitacl
+
 echo $etcd_endpoint
 #--------------------- zone init ----------------------------
 rm -fr zonedirs.txt zonetarget.txt

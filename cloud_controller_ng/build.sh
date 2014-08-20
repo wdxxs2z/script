@@ -32,7 +32,7 @@ if [ ! -d /var/vcap/packages/cloud_controller_ng ]; then
     mkdir -p /var/vcap/packages/cloud_controller_ng
 fi
 
-cp -a $homedir/cf-release/src/cloud_controller_ng/* /var/vcap/packages/cloud_controller_ng
+cp -a $homedir/cf-release/src/cloud_controller_ng /var/vcap/packages/cloud_controller_ng/
 
 #------------------------ Resolve the cloud_controller_ng depdens ------
 if [ ! -d /var/vcap/packages ]; then 
@@ -107,7 +107,7 @@ rm -fr /var/vcap/packages/sqlite-autoconf-3070500
 popd
 
 #--------------------------------- Cloud_controller_ng install -----------
-pushd /var/vcap/packages/cloud_controller_ng
+pushd /var/vcap/packages/cloud_controller_ng/cloud_controller_ng
 
 bundle package --all
 
@@ -127,7 +127,17 @@ cp -a /home/vcap/cf-release/src/common/* /var/vcap/packages/common/
 
 mkdir -p /var/vcap/packages/syslog_aggregator
 
-cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+#ubuntu and centos
+if grep -q -i ubuntu /etc/issue
+then
+    cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+fi
+
+if grep -q -i centos /etc/issue
+then
+    cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+    sed -i "s/\/usr\/sbin/\/sbin/g" /var/vcap/packages/syslog_aggregator/setup_syslog_forwarder.sh 
+fi
 
 tar -zcf cloud_controller_ng.tar.gz cloud_controller_ng libpq mysqlclient sqlite common syslog_aggregator
 

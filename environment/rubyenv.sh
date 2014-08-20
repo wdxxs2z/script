@@ -2,6 +2,11 @@
 
 set -e
 
+if [ ! -d /var/vcap/packages ]; then
+    sudo mkdir -p /var/vcap/packages
+    sudo chown -R vcap:vcap /var/vcap
+fi
+
 pushd /var/vcap/packages
 
 if [ ! -d ruby ]; then

@@ -8,6 +8,7 @@ local_route: $1
 external_port: 9022
 
 pid_filename: /this/isnt/used/by/the/worker
+newrelic_enabled: false
 development_mode: false
 
 message_bus_servers:
@@ -43,6 +44,9 @@ app_usage_events:
 
 audit_events:
   cutoff_age_in_days: 31
+  
+failed_jobs:
+  cutoff_age_in_days: 31
 
 billing_event_writing_enabled: true
 
@@ -75,7 +79,7 @@ info:
 
 directories:
  tmpdir: /var/vcap/data/cloud_controller_ng/tmp
-
+ diagnostics: /var/vcap/data/cloud_controller_ng/diagnostics
 
 logging:
   file: /var/vcap/sys/log/cloud_controller_worker/cloud_controller_worker.log
@@ -185,7 +189,7 @@ buildpacks:
 
 db_encryption_key: c1oudc0w
 
-tasks_disabled: false
+#tasks_disabled: false
 flapping_crash_count_threshold: 3
 
 disable_custom_buildpacks: false

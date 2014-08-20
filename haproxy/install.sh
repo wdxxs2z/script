@@ -132,4 +132,7 @@ cp -a $cfscriptdir/haproxy/bin/* $HAPROXY_BIN
 
 chmod -R +x $HAPROXY_BIN/*
 
+#---------------------- Haproxy monit ----------------------------
+source /home/vcap/script/monit/install.sh "haproxy"
+
 echo "Haproxy install complete!"

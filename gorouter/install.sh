@@ -23,3 +23,5 @@ pushd $PACKAGES_DIR
     tar -xf $COMPONENT.tar 
     rm -fr $COMPONENT.tar.gz $COMPONENT.tar
 popd
+
+source /home/vcap/script/monit/install.sh $COMPONENT

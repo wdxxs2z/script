@@ -69,7 +69,17 @@ echo "This step will always be install......"
 
     mkdir -p /var/vcap/packages/syslog_aggregator
 
-    cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+    #ubuntu and centos
+    if grep -q -i ubuntu /etc/issue
+    then
+        cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+    fi
+
+    if grep -q -i centos /etc/issue
+    then
+        cp -a $homedir/cf-release/src/syslog_aggregator/* /var/vcap/packages/syslog_aggregator/
+        sed -i "s/\/usr\/sbin/\/sbin/g" /var/vcap/packages/syslog_aggregator/setup_syslog_forwarder.sh 
+    fi
     
     tar -zcf loggregator.tar.gz loggregator common syslog_aggregator
     curl -F "action=/upload/build" -F "uploadfile=@loggregator.tar.gz" http://$RESOURCE_URL/upload/build

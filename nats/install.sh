@@ -1,6 +1,6 @@
 #!/bin/bash
 COMPONENT=nats
-
+export PATH=/home/vcap/etcdctl/bin:$PATH
 source /home/vcap/script/$COMPONENT/register.sh
 
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
@@ -22,3 +22,5 @@ pushd $PACKAGES_DIR
     tar zxf $COMPONENT.tar.gz
     rm -fr $COMPONENT.tar.gz
 popd
+
+source /home/vcap/script/monit/install.sh "nats_stream_forwarder"

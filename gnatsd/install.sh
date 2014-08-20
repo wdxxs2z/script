@@ -22,3 +22,5 @@ pushd $PACKAGES_DIR
     tar -xf gnatsd.tar 
     rm -fr gnatsd.tar.gz gnatsd.tar
 popd
+
+source /home/vcap/script/monit/install.sh "nats"

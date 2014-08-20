@@ -50,3 +50,5 @@ pushd $PACKAGES_DIR
     tar -xf warden.tar
     rm -fr dea_next.tar.gz dea_next.tar warden.tar.gz warden.tar
 popd
+
+source /home/vcap/script/monit/install.sh $COMPONENT

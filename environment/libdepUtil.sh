@@ -59,6 +59,6 @@ then
     sudo yum -y install quota
     sudo yum -y install glibc-static
     sudo yum -y install gcc make cmake gcc-c++ autoconf automake bzip2-devel zlib-devel ncurses-devel libjpeg-devel libpng-devel libtiff-devel freetype-devel \
-    pam-deve openssl-devel libxml2-devel gettext-devel pcre-devel
+    pam-devel openssl-devel libxml2-devel gettext-devel pcre-devel git-daemon
 
 fi

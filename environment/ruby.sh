@@ -9,7 +9,7 @@ homeDir=/home/vcap
 
     if [ ! -f $homeDir/Downloads/ruby-1.9.3-p547.tar.gz ]; then
     	echo "---------Download ruby------------------"
-	sudo apt-get install -y libyaml-dev
+	#sudo apt-get install -y libyaml-dev
 	mkdir -p $homeDir/Downloads
 	wget -P $homeDir/Downloads http://cache.ruby-lang.org/pub/ruby/ruby-1.9.3-p547.tar.gz
         wget -P $homeDir/Downloads http://pyyaml.org/download/libyaml/yaml-0.1.5.tar.gz
@@ -21,9 +21,11 @@ homeDir=/home/vcap
 
     pushd $homeDir/Downloads/yaml-0.1.5
     ./configure
-    sudo make
-    sudo make install  
+    make
+    make install  
     popd
+    
+    read dd
 
     pushd $homeDir/Downloads/ruby-1.9.3-p547
     ./configure --prefix=/home/vcap/ruby

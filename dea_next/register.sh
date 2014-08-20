@@ -8,9 +8,6 @@ WARDEN_BIN_DIR=/var/vcap/jobs/dea_next/bin
 DEA_NEXT_CONFIG=/var/vcap/jobs/dea_next/config
 DEA_NEXT_BIN=/var/vcap/jobs/dea_next/bin
 
-cgroup=`awk '/cgroup/ {print $0}' /etc/default/grub`
-cgroup2="GRUB_CMDLINE_LINUX=\"cgroup_enable=memory swapaccount=1\""
-
 source /home/vcap/script/dea_next/editdea_ng.sh
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 indexfile=/home/vcap/script/resources/dea_next_index.txt
@@ -43,6 +40,8 @@ fi
 
 if grep -q -i ubuntu /etc/issue
 then
+    cgroup=`awk '/cgroup/ {print $0}' /etc/default/grub`
+    cgroup2="GRUB_CMDLINE_LINUX=\"cgroup_enable=memory swapaccount=1\""
     if [[ $cgroup != $cgroup2 ]];
     then
         sudo echo "GRUB_CMDLINE_LINUX=\"cgroup_enable=memory swapaccount=1\"" >> /etc/default/grub
@@ -220,6 +219,18 @@ editdea_ng "$nats_servers" "$base_url" "$log_endpoint_url" "$index" "$zone"
 
 rm -fr lnats.txt dea_nextdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt zonedirs.txt
 
+#centos warden support
+if grep -q -i ubuntu /etc/issue
+then
+    echo "ubuntu 12.04 warden support"
+fi
+
+if grep -q -i centos /etc/issue
+then
+    echo "centos 6.5 warden support"
+    sed -i "s/rootfs_lucid64/rootfs/g" /var/vcap/jobs/dea_next/config/warden.yml
+fi
+
 popd
 
 #------------------- dea_next bin init -------------------------
@@ -228,6 +239,7 @@ pushd $DEA_NEXT_BIN
 
 cp -a $cfscriptdir/dea_next/bin/dea_ctl $DEA_NEXT_BIN/
 cp -a $cfscriptdir/dea_next/bin/dir_server_ctl $DEA_NEXT_BIN/
+cp -a $cfscriptdir/dea_next/bin/warden_ctl $DEA_NEXT_BIN/
 chmod -R +x $DEA_NEXT_BIN/
 
 popd
