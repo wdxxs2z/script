@@ -4,7 +4,9 @@ homedir=/home/vcap
 
 BUILDPACK_ALL=/var/vcap/packages
 
-RESOURCE_URL="192.168.201.134:9090"
+export PATH=/home/vcap/etcdctl/bin:$PATH
+
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 mkdir -p $BUILDPACK_ALL/buildpack_cache
 

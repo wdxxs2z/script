@@ -5,6 +5,8 @@ COMPONENT=nginx_newrelic_plugin
 source /home/vcap/script/$COMPONENT/register.sh
 source /home/vcap/script/$COMPONENT/etcdinit.sh
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 PACKAGES_DIR=/var/vcap/packages
 

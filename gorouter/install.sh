@@ -3,6 +3,8 @@ COMPONENT=gorouter
 
 source /home/vcap/script/$COMPONENT/register.sh
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 PACKAGES_DIR=/var/vcap/packages
 

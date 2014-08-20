@@ -7,10 +7,10 @@ echo "*************************************************************"
 SCRIPTDIR=/home/vcap/script
 
 #env script
-#source $SCRIPTDIR/environment/libdepUtil.sh
-#source $SCRIPTDIR/environment/golang.sh
-#source $SCRIPTDIR/environment/ruby.sh
-#source $SCRIPTDIR/environment/rubyenv.sh
+source $SCRIPTDIR/environment/libdepUtil.sh
+source $SCRIPTDIR/environment/golang.sh
+source $SCRIPTDIR/environment/ruby.sh
+source $SCRIPTDIR/environment/rubyenv.sh
 
 #com script
 source $SCRIPTDIR/etcdctl/build.sh

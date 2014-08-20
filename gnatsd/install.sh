@@ -2,6 +2,8 @@
 
 source /home/vcap/script/gnatsd/register.sh
 
+export PATH=/home/vcap/etcdctl/bin:$PATH
+
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 PACKAGES_DIR=/var/vcap/packages
 

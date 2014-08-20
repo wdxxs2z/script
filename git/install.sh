@@ -1,7 +1,7 @@
 #!/bin/bash
 
 homedir=/home/vcap
-export PATH=/var/vcap/packages/etcd/bin:$PATH
+export PATH=/home/vcap/etcdctl/bin:$PATH
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if [ ! -d /var/vcap ]; then
