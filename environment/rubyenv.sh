@@ -80,5 +80,6 @@ tar zxvf ruby/rubygems-${RUBYGEMS_VERSION}.tgz
 
 ${BOSH_INSTALL_TARGET}/bin/gem install ruby/bundler-${BUNDLER_VERSION}.gem --no-ri --no-rdoc
 ${BOSH_INSTALL_TARGET}/bin/gem install rake -v 0.9.2.2 --no-rdoc --no-ri
+${BOSH_INSTALL_TARGET}/bin/gem install rake -v 10.0.3 --no-rdoc --no-ri
 
 popd
