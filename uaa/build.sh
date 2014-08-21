@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "**********************************************"
-echo "            build gnatsd                      "
+echo "*           build uaa                        *"
 echo "**********************************************"
 
 homedir=/home/vcap
@@ -66,10 +66,6 @@ popd
 
 #-------------------------- uaa prepare -----------------------------
 #registrar information
-cd ${BUILD_DIR}/cf-registrar-bundle-for-identity
-
-bundle package --all
-
 #unpack Maven
 cd ${BUILD_DIR}
 tar zxf maven/apache-maven-3.1.1-bin.tar.gz
@@ -146,10 +142,14 @@ cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war webapps/ROOT.war
 cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war webapps/varz.war
 
 cd /var/vcap/packages/uaa
-cp -a ${BUILD_DIR}/cf-registrar-bundle-for-identity vcap-common
-cd vcap-common
+rm -fr /var/vcap/packages/uaa/vcap-common
+mkdir /var/vcap/packages/uaa/vcap-common
+cp -a $homedir/cf-release/src/cf-registrar-bundle-for-identity/* /var/vcap/packages/uaa/vcap-common/
+cd /var/vcap/packages/uaa/vcap-common
 #/var/vcap/packages/ruby/bin/bundle package --all
-/var/vcap/packages/ruby/bin/bundle install --binstubs --deployment --local --without=development test
+#/var/vcap/packages/ruby/bin/bundle  install
+/var/vcap/packages/ruby/bin/bundle install --binstubs --deployment --without=development test
+/var/vcap/packages/ruby/bin/bundle install --local --deployment
 
 pushd /var/vcap/packages
 

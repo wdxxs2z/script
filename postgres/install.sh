@@ -13,6 +13,8 @@ if [ ! -d /var/vcap/packages ]; then
     sudo chown -R vcap:vcap /var/vcap/packages 
 fi
 
+mkdir /var/vcap/store/postgres
+
 wget -c -r -nd -P $PACKAGES_DIR http://$RESOURCE_URL/build/$COMPONENT.tar.gz
 
 if [ ! -f $PACKAGES_DIR/$COMPONENT.tar.gz ]; then
