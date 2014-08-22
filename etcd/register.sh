@@ -89,7 +89,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
             rm -fr etcdindexdirs.txt
             etcdctl ls /deployment/v1/manifest/etcdindex >> etcdindexdirs.txt
             last=`sed -n '$=' etcdindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set /deployment/v1/manifest/etcdindex/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > $indexfile
         fi

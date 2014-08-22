@@ -84,7 +84,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
         else
             etcdctl ls $register_nats_dir/index >> natsindexdirs.txt
             last=`sed -n '$=' natsindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set $register_nats_dir/index/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > /home/vcap/script/resources/gnatsd_index.txt
         fi

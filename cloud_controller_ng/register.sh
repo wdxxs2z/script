@@ -130,7 +130,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
             rm -fr ccngindexdirs.txt
             etcdctl ls /deployment/v1/cloud_controller_ng/index >> ccngindexdirs.txt
             last=`sed -n '$=' ccngindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set /deployment/v1/cloud_controller_ng/index/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > $indexfile
         fi

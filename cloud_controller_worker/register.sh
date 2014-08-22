@@ -125,7 +125,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
             rm -fr ccworkerindexdirs.txt
             etcdctl ls /deployment/v1/cloud_controller_worker/index >> ccworkerindexdirs.txt
             last=`sed -n '$=' ccworkerindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set /deployment/v1/cloud_controller_worker/index/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > $indexfile
         fi

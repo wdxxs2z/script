@@ -118,7 +118,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
         else
             etcdctl ls /deployment/v1/uaa-server/index/index >> uaaindexdirs.txt
             last=`sed -n '$=' uaaindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set /deployment/v1/uaa-server/index/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > /home/vcap/script/resources/uaa_index.txt
         fi

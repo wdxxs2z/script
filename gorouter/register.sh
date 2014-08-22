@@ -122,7 +122,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
             rm -fr gorouterindexdirs.txt
             etcdctl ls /deployment/v1/gorouter/index >> gorouterindexdirs.txt
             last=`sed -n '$=' gorouterindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set /deployment/v1/gorouter/index/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > $indexfile
         fi

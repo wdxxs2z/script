@@ -157,7 +157,7 @@ if [ "$NISE_IP_ADDRESS" != "" ]; then
             rm -fr loggregatorindexdirs.txt
             etcdctl ls /deployment/v1/loggregator-server/index >> loggregatorindexdirs.txt
             last=`sed -n '$=' loggregatorindexdirs.txt`
-            new_index=`expr $last + 1`
+            new_index=$last
             etcdctl set /deployment/v1/loggregator-server/index/$new_index $NISE_IP_ADDRESS
             echo "$new_index" > $indexfile
         fi
