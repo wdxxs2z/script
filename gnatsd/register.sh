@@ -41,6 +41,14 @@ pushd /home/vcap/etcdctl
 
 popd
 
+source /home/vcap/script/gnatsd/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 #--------------------- etcd register ----------------------
 etcdctl mkdir $register_nats_dir
 etcdctl mkdir $register_nats_dir/index

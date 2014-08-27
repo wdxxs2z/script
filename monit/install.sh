@@ -59,18 +59,3 @@ then
     popd
     fi
 fi
-
-#useradd syslog
-sudo useradd syslog
-sudo usermod -a -G adm syslog
-
-#runit
-pushd /home/vcap/
-wget http://smarden.org/runit/runit-2.1.2.tar.gz
-tar -zxf runit-2.1.2.tar.gz
-rm runit-2.1.2.tar.gz
-cd admin/runit-2.1.2
-sudo ./package/install
-sudo cp /usr/local/bin/chpst /sbin/
-popd
-

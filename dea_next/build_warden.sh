@@ -2,7 +2,6 @@
 
 export PATH=/var/vcap/packages/ruby/bin:$PATH
 export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
-export WARDEN_GEMFILE=/var/vcap/packages/warden/warden/Gemfile
 
 homedir=/home/vcap
 cfdir=/home/vcap/cf-release
@@ -36,17 +35,10 @@ mkdir -p /var/vcap/sys/run/warden
 echo "This step will always be install......"
     mkdir -p /var/vcap/packages
     pushd /var/vcap/packages
-    	echo "Setup git clone warden 1828c6f56f"
-        git clone https://github.com/cloudfoundry/warden
-   	cd warden
-	git submodule update --init
-        git pull origin master
-        git checkout 64683f4b682dd3a2fcaed37d83d110cef12fc5b3
-	rm -fr warden/config/linux.yml
- 	cp -a $cfscriptdir/dea_next/config/warden.yml warden/config/linux.yml
-        cp -a $cfscriptdir/dea_next/config/warden.yml $WARDEN_CONF_DIR
-	cd warden
-        bundle install
+    	cp -a $cfdir/src/warden /var/vcap/packages/
+        cd /var/vcap/packages/warden/warden
+        cp /home/vcap/script/dea_next/common.sh /var/vcap/packages/warden/warden/root/linux/skeleton/lib/
+        bundle package --all
         bundle install --local --deployment --without development test
         bundle exec rake setup:bin
     popd

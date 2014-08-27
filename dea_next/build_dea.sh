@@ -2,7 +2,6 @@
 
 export PATH=/var/vcap/packages/ruby/bin:$PATH
 export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
-export DEA_NEXT_GEMFILE=/var/vcap/packages/dea_next/Gemfile
 
 export GOROOT=/home/vcap/go
 export GOARCH=amd64
@@ -53,7 +52,7 @@ fi
     echo "Setup git checkout dea_next......"
     cp -a $homedir/cf-release/src/dea_next /var/vcap/packages
     cd /var/vcap/packages/dea_next
-    bundle install
+    bundle package --all
     bundle install --local --deployment --without development test
 
     echo "Set install golang file dirserver"

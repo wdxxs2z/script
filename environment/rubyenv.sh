@@ -50,22 +50,22 @@ tar xzf ruby/yaml-${LIBYAML_VERSION}.tar.gz
 (
   set -e
   cd yaml-${LIBYAML_VERSION}/
-  ./configure --prefix=${BOSH_INSTALL_TARGET}
+  mkdir -p ${BOSH_INSTALL_TARGET}/yaml
+  ./configure --prefix=${BOSH_INSTALL_TARGET}/yaml
   make -j 3   # Use 3 CPUs, which is 1.5 x 2 (the normal number of compile CPUs)
   make install
-  sudo ldconfig
 )
 
 tar xzf ruby/ruby-${RUBY_VERSION}.tar.gz
 (
   set -e
   cd ruby-${RUBY_VERSION}
-  ./configure --prefix=${BOSH_INSTALL_TARGET} --disable-install-doc --with-opt-dir=/var/vcap/packages/ruby/lib
+  ./configure --prefix=${BOSH_INSTALL_TARGET} --disable-install-doc --with-opt-dir=${BOSH_INSTALL_TARGET}/yaml
   make
   make install
 )
 
-tar zxvf ruby/rubygems-${RUBYGEMS_VERSION}.tgz
+tar zxf ruby/rubygems-${RUBYGEMS_VERSION}.tgz
 (
   set -e
   cd rubygems-${RUBYGEMS_VERSION}

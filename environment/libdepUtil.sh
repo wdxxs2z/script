@@ -56,9 +56,22 @@ then
     
     sudo yum -y install perl-ExtUtils-MakeMaker perl-ExtUtils-CBuilder perl-Time-HiRes nc 
     sudo yum -y groupinstall "Development Tools"
-    sudo yum -y install quota
     sudo yum -y install glibc-static
     sudo yum -y install gcc make cmake gcc-c++ autoconf automake bzip2-devel zlib-devel ncurses-devel libjpeg-devel libpng-devel libtiff-devel freetype-devel \
-    pam-devel openssl-devel libxml2-devel gettext-devel pcre-devel git-daemon libcurl mysql-server mysql-devel postgresql-devel
+    pam-devel openssl-devel libxml2-devel gettext-devel pcre-devel git-daemon libcurl mysql-server mysql-devel postgresql-devel readline-devel libcurl-devel
+
+    #user add
+    sudo useradd syslog
+    sudo usermod -a -G adm syslog
+
+    #runit
+    pushd /home/vcap/
+    wget http://smarden.org/runit/runit-2.1.2.tar.gz
+    tar -zxf runit-2.1.2.tar.gz
+    rm -fr runit-2.1.2.tar.gz
+    cd admin/runit-2.1.2
+    sudo ./package/install
+    sudo cp /usr/local/bin/chpst /sbin/
+    popd
 
 fi

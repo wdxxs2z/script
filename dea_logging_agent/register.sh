@@ -41,6 +41,14 @@ pushd /home/vcap/etcdctl
 
 popd
 
+source /home/vcap/script/dea_logging_agent/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 mkdir -p $LOG_DEA_AGENT_CONFIG
 mkdir -p $LOG_DEA_AGENT_BIN
 

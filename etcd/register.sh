@@ -48,6 +48,14 @@ pushd /home/vcap/etcdctl
 
 popd
 
+source /home/vcap/script/etcd/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 etcdctl mkdir $register_etcd_dir
 etcdctl mkdir /deployment/v1/manifest/etcdindex
 
