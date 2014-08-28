@@ -3,11 +3,19 @@
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
-export PATH=/home/vcap/etcdctl/bin:$PATH
-RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
-
 source /home/vcap/script/nginx/edit_nginx.sh
-source /home/vcap/script/nginx/etcdinit.sh
+
+export PATH=/home/vcap/etcdctl/bin:$PATH
+
+source /home/vcap/script/nginx/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
+RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 NGINX_CONFIG=/var/vcap/jobs/cloud_controller_ng/config
 NGINX_BIN=/var/vcap/jobs/cloud_controller_ng/bin

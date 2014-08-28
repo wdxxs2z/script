@@ -9,6 +9,14 @@ homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
 
+source /home/vcap/script/monit/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 if [ -f /var/vcap/monit/monit.user ]
 then
     MONIT_PASSWD=$(more /var/vcap/monit/monit.user | cut -f 2 -d ':')

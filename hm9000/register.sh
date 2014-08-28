@@ -50,6 +50,14 @@ pushd /home/vcap/etcdctl
 
 popd
 
+source /home/vcap/script/hm9000/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 #nats-urls
 rm -fr natsdirs.txt /home/vcap/script/resources/natsip.txt
 

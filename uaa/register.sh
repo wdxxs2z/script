@@ -56,6 +56,14 @@ pushd /home/vcap/etcdctl
 
 popd
 
+source /home/vcap/script/uaa/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 rm -fr /home/vcap/script/resources/db_url.txt /home/vcap/script/resources/cc_base_url.txt
 rm -fr /home/vcap/script/resources/uaa_urls.txt uaasdirs.txt
 

@@ -35,6 +35,14 @@ pushd /home/vcap/etcdctl
 
 popd
 
+source /home/vcap/script/postgres/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 if [ ! -d $homedir/cf-config-script ]; then
     pushd $homedir
     git clone https://github.com/wdxxs2z/cf-config-script
