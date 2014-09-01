@@ -5,9 +5,15 @@ export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
 homedir=/home/vcap
 cfdir=/home/vcap/cf-release
-cfscriptdir=/home/vcap/cf-config-script
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/script/dea_next/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 echo "---------------Warden-------------------"
@@ -32,16 +38,16 @@ mkdir -p /var/vcap/jobs/dea_next/config
 mkdir -p /var/vcap/sys/log/warden
 mkdir -p /var/vcap/sys/run/warden
 
-echo "This step will always be install......"
-    mkdir -p /var/vcap/packages
-    pushd /var/vcap/packages
-    	cp -a $cfdir/src/warden /var/vcap/packages/
-        cd /var/vcap/packages/warden/warden
-        cp /home/vcap/script/dea_next/common.sh /var/vcap/packages/warden/warden/root/linux/skeleton/lib/
-        bundle package --all
-        bundle install --local --deployment --without development test
-        bundle exec rake setup:bin
-    popd
+#ubuntu and centos warden importent
+mkdir -p /var/vcap/packages
+pushd /var/vcap/packages
+cp -a $cfdir/src/warden /var/vcap/packages/
+cd /var/vcap/packages/warden/warden
+cp /home/vcap/script/dea_next/common.sh /var/vcap/packages/warden/warden/root/linux/skeleton/lib/
+bundle package --all
+bundle install --local --deployment --without development test
+bundle exec rake setup:bin
+popd
 
 pushd /var/vcap/packages
 tar -zcf warden.tar.gz warden

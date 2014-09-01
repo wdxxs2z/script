@@ -7,6 +7,9 @@ echo "**********************************************"
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 CLOUD_CONTROLLER_NG_CONFIG=/var/vcap/jobs/cloud_controller_ng/config
 CLOUD_CONTROLLER_NG_BIN=/var/vcap/jobs/cloud_controller_ng/bin
 

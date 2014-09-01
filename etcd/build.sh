@@ -9,8 +9,17 @@ export PATH=/var/vcap/packages/etcd/bin:$PATH
 export GOPATH=/var/vcap/packages/etcd
 
 homedir=/home/vcap
+
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/script/etcd/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 echo "------------ETCD---------------"
 
 if [ ! -d /var/vcap ]; then

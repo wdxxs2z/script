@@ -5,6 +5,10 @@ homedir=/home/vcap
 
 POSTGRES_CONFIG=/var/vcap/jobs/postgres/config
 POSTGRES_BIN=/var/vcap/jobs/postgres/bin
+
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 

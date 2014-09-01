@@ -6,6 +6,13 @@ export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/script/cloud_controller_ng/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if ! (which ruby); then
@@ -32,7 +39,8 @@ if [ ! -d /var/vcap/packages/cloud_controller_ng ]; then
     mkdir -p /var/vcap/packages/cloud_controller_ng
 fi
 
-cp -a $homedir/cf-release/src/cloud_controller_ng /var/vcap/packages/cloud_controller_ng/
+rm -fr /var/vcap/packages/cloud_controller_ng
+cp -a $homedir/cf-release/src/cloud_controller_ng /var/vcap/packages/
 
 #------------------------ Resolve the cloud_controller_ng depdens ------
 if [ ! -d /var/vcap/packages ]; then 

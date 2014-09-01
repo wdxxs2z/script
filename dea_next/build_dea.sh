@@ -14,6 +14,15 @@ cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
+
+source /home/vcap/script/dea_next/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
+
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 
@@ -39,29 +48,24 @@ cd src/dea_next
 git submodule update --init
 popd
 
-if [ ! -d $homedir/cf-config-script ]; then
-    pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
-    popd
-fi
 
-    echo "This step will always be install......"
-    mkdir -p /var/vcap/packages
-    pushd /var/vcap/packages
+echo "This step will always be install......"
+mkdir -p /var/vcap/packages
 
-    echo "Setup git checkout dea_next......"
-    cp -a $homedir/cf-release/src/dea_next /var/vcap/packages
-    cd /var/vcap/packages/dea_next
-    bundle package --all
-    bundle install --local --deployment --without development test
+pushd /var/vcap/packages
+#Dea_next main install
+cp -a $homedir/cf-release/src/dea_next /var/vcap/packages
+cd /var/vcap/packages/dea_next
+bundle package --all
+bundle install --local --deployment --without development test
 
-    echo "Set install golang file dirserver"
-    cd /var/vcap/packages/dea_next/go/src/runner
-    go build
-    go install runner
-    mkdir -p /var/vcap/packages/dea_next/go/bin/
-    cp /var/vcap/packages/dea_next/go/src/runner/runner /var/vcap/packages/dea_next/go/bin/
-    popd
+#Golang runner dea_dir server 
+cd /var/vcap/packages/dea_next/go/src/runner
+go build
+go install runner
+mkdir -p /var/vcap/packages/dea_next/go/bin/
+cp /var/vcap/packages/dea_next/go/src/runner/runner /var/vcap/packages/dea_next/go/bin/
+popd
 
 pushd /var/vcap/packages
 

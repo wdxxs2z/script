@@ -10,6 +10,9 @@ homedir=/home/vcap
 UAA_CONFIG=/var/vcap/jobs/uaa/config
 UAA_BIN=/var/vcap/jobs/uaa/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 
 UAA_REGIST_CONFIG=$cfscriptdir/uaa/config/cf-registrar

@@ -3,7 +3,11 @@
 LOG_DEA_AGENT_CONFIG=/var/vcap/jobs/dea_logging_agent/config
 LOG_DEA_AGENT_BIN=/var/vcap/jobs/dea_logging_agent/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
+
 homedir=/home/vcap
 indexfile=/home/vcap/script/resources/dea_logging_endpoint_index.txt
 
@@ -15,6 +19,12 @@ source /home/vcap/script/dea_logging_agent/edit_dea_log_agent.sh
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
+fi
+
+if [ ! -d $homedir/cf-config-script ]; then
+    pushd $homedir
+    git clone https://github.com/wdxxs2z/cf-config-script
+    popd
 fi
 
 #+++++++++++++++++++++++++++dea_logging_config init+++++++++++++++++++++++++

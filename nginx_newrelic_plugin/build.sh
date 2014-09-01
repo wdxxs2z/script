@@ -3,22 +3,21 @@
 export PATH=/var/vcap/packages/ruby/bin:$PATH
 export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
-cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/script/nginx_newrelic_plugin/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
-fi
-
-
-if [ ! -d $homedir/cf-config-script ]; then
-    pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
-    popd
 fi
 
 #-------------------------- nginx_newrelic_plugin ----------------------------
@@ -40,7 +39,6 @@ tar zxf nginx/newrelic_nginx_agent.tar.gz
 cp -a newrelic_nginx_agent/* /var/vcap/packages/nginx_newrelic_plugin/
 
 pushd /var/vcap/packages/nginx_newrelic_plugin
-#bundle install 
 bundle package --all
 bundle install --local --deployment --without development test
 popd

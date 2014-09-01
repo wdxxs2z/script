@@ -3,6 +3,9 @@
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 source /home/vcap/script/nginx/edit_nginx.sh
 
 export PATH=/home/vcap/etcdctl/bin:$PATH

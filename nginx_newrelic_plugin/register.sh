@@ -6,6 +6,9 @@ homedir=/home/vcap
 NGINX_NEWRELIC_PLUGIN_CONFIG=/var/vcap/jobs/cloud_controller_ng/config
 NGINX_NEWRELIC_PLUGIN_BIN=/var/vcap/jobs/cloud_controller_ng/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap

@@ -8,6 +8,9 @@ WARDEN_BIN_DIR=/var/vcap/jobs/dea_next/bin
 DEA_NEXT_CONFIG=/var/vcap/jobs/dea_next/config
 DEA_NEXT_BIN=/var/vcap/jobs/dea_next/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 source /home/vcap/script/dea_next/editdea_ng.sh
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 indexfile=/home/vcap/script/resources/dea_next_index.txt

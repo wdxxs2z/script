@@ -6,6 +6,9 @@ homedir=/home/vcap
 CLOUD_CONTROLLER_CLOCK_CONFIG=/var/vcap/jobs/cloud_controller_clock/config
 CLOUD_CONTROLLER_CLOCK_BIN=/var/vcap/jobs/cloud_controller_clock/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 source /home/vcap/script/cloud_controller_clock/edit_cc_clock.sh
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 

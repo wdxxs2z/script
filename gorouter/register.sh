@@ -3,6 +3,9 @@
 GOROUTER_CONFIG=/var/vcap/jobs/gorouter/config
 GOROUTER_BIN=/var/vcap/jobs/gorouter/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 indexfile=/home/vcap/script/resources/router_index.txt

@@ -2,6 +2,10 @@
 
 ETCD_CONFIG=/var/vcap/jobs/etcd/config
 ETCD_BIN=/var/vcap/jobs/etcd/bin
+
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 indexfile=/home/vcap/script/resources/etcdstore_index.txt

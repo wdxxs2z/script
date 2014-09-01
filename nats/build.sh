@@ -5,8 +5,17 @@ export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
+
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/script/nats/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
+
 #--------------- git clone ----------------------
 if ! (which ruby); then
     echo "Ruby is not or error setup,please install ruby......"
@@ -28,21 +37,12 @@ cd src/nats
 git submodule update --init
 popd
 
-if [ ! -d $homedir/cf-config-script ]; then
-    pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
-    popd
-fi
-
-pushd $homedir/cf-release/src/nats
-bundle package --all
-popd
-
 mkdir -p /var/vcap/packages/nats/nats
 cp -a $homedir/cf-release/src/nats/* /var/vcap/packages/nats/nats
 
 pushd /var/vcap/packages/nats/nats
-/var/vcap/packages/ruby/bin/bundle install --local --deployment --without development test
+bundle package --all
+bundle install --local --deployment --without development test
 popd
 
 pushd /var/vcap/packages

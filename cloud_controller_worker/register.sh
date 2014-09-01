@@ -6,6 +6,9 @@ homedir=/home/vcap
 CLOUD_CONTROLLER_WORKER_CONFIG=/var/vcap/jobs/cloud_controller_worker/config
 CLOUD_CONTROLLER_WORKER_BIN=/var/vcap/jobs/cloud_controller_worker/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 source /home/vcap/script/cloud_controller_worker/edit_cc_worker.sh
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 

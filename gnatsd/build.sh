@@ -13,7 +13,15 @@ export PATH=/var/vcap/packages/gnatsd/bin:$PATH
 export GOPATH=/var/vcap/packages/gnatsd
 
 homedir=/home/vcap
+
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/script/gnatsd/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 
 if [ ! -d /var/vcap ]; then

@@ -5,10 +5,14 @@ echo "*           build uaa                        *"
 echo "**********************************************"
 
 homedir=/home/vcap
-export PATH=/var/vcap/packages/ruby/bin:$PATH
-export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
+source /home/vcap/uaa/etcdinit.sh > peers.txt
+while read line
+do
+    export ETCDCTL_PEERS=http://$line:4001
+done < peers.txt
+rm -fr peers.txt
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 #----------------------- git init -----------------------
 if [ ! -d /var/vcap ]; then
@@ -141,15 +145,15 @@ rm -rf webapps/*
 cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-uaa.war webapps/ROOT.war
 cp -a ${BUILD_DIR}/uaa/cloudfoundry-identity-varz-1.0.2.war webapps/varz.war
 
+export PATH=/var/vcap/packages/ruby/bin:$PATH
+export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 cd /var/vcap/packages/uaa
 rm -fr /var/vcap/packages/uaa/vcap-common
 mkdir /var/vcap/packages/uaa/vcap-common
 cp -a $homedir/cf-release/src/cf-registrar-bundle-for-identity/* /var/vcap/packages/uaa/vcap-common/
 cd /var/vcap/packages/uaa/vcap-common
-#/var/vcap/packages/ruby/bin/bundle package --all
-#/var/vcap/packages/ruby/bin/bundle  install
-/var/vcap/packages/ruby/bin/bundle install --binstubs --deployment --without=development test
-/var/vcap/packages/ruby/bin/bundle install --local --deployment
+bundle package --all
+bundle install --local --deployment --without development test
 
 pushd /var/vcap/packages
 

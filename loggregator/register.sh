@@ -3,6 +3,9 @@
 LOGGREGATOR_CONFIG=/var/vcap/jobs/loggregator/config
 LOGGREGATOR_BIN=/var/vcap/jobs/loggregator/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 indexfile=/home/vcap/script/resources/loggregator_index.txt

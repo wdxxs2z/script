@@ -6,6 +6,10 @@ echo "**********************************************"
 
 GNATSD_CONFIG=/var/vcap/jobs/nats/config
 GNATSD_BIN=/var/vcap/jobs/nats/bin
+
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
@@ -15,6 +19,12 @@ natsips=`more /home/vcap/script/resources/natsip.txt`
 if [ ! -d /var/vcap ]; then
     sudo mkdir -p /var/vcap
     sudo chown vcap:vcap /var/vcap
+fi
+
+if [ ! -d $homedir/cf-config-script ]; then
+    pushd $homedir
+    git clone https://github.com/wdxxs2z/cf-config-script
+    popd
 fi
 
 mkdir -p $GNATSD_CONFIG

@@ -9,6 +9,9 @@ export GOOS=linux
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 etcd_endpoint=""
 last=`sed -n '$=' /home/vcap/script/deployment.etcd`
 j=1

@@ -7,14 +7,16 @@ echo "*************************************************************"
 SCRIPTDIR=/home/vcap/script
 
 #env script
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
 source $SCRIPTDIR/environment/libdepUtil.sh
 source $SCRIPTDIR/environment/golang.sh
 source $SCRIPTDIR/environment/ruby.sh
 source $SCRIPTDIR/environment/rubyenv.sh
 
 #com script
-source $SCRIPTDIR/cf-prepare/cf-verison.sh
 source $SCRIPTDIR/etcdctl/build.sh
+source $SCRIPTDIR/cf-prepare/cf-verison.sh
 source $SCRIPTDIR/etcd/build.sh
 source $SCRIPTDIR/postgres/build.sh
 source $SCRIPTDIR/gnatsd/build.sh
@@ -28,4 +30,3 @@ source $SCRIPTDIR/dea_next/build_dea.sh
 source $SCRIPTDIR/dea_next/build_warden.sh
 source $SCRIPTDIR/hm9000/build.sh
 source $SCRIPTDIR/gorouter/build.sh
-#source $SCRIPTDIR/haproxy/install.sh

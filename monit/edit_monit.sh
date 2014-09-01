@@ -18,9 +18,8 @@ include /var/vcap/monit/*.monitrc
 include /var/vcap/monit/job/*.monitrc
 " > /var/vcap/bosh/etc/monitrc
 
-if [ ! -f /var/vcap/monit/monit.user ]; then
-    echo -e "vcap:$4" > /var/vcap/monit/monit.user
-fi
+echo -e "vcap:$4" > /var/vcap/monit/monit.user
+
 }
 
 localhost="$1"

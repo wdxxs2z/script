@@ -2,6 +2,10 @@
 
 HM9000_CONFIG=/var/vcap/jobs/hm9000/config
 HM9000_BIN=/var/vcap/jobs/hm9000/bin
+
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 

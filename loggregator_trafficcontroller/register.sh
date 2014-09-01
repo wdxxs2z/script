@@ -3,6 +3,9 @@
 LOG_TRAFFICCONTROLLER_CONFIG=/var/vcap/jobs/loggregator_trafficcontroller/config
 LOG_TRAFFICCONTROLLER_BIN=/var/vcap/jobs/loggregator_trafficcontroller/bin
 
+export PATH=$PATH:/home/vcap/script/
+chmod +x -R /home/vcap/script/*
+
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
