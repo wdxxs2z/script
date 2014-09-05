@@ -37,6 +37,8 @@ do
    fi
 done < /home/vcap/script/deployment.etcd
 
+echo $etcd_endpoint
+
 if [ "$etcd_endpoint" == "" ]; then
     echo "etcd_endpoint is not found...please check your etcd servers" >> manifest.log
     exit 1
