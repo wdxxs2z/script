@@ -8,7 +8,7 @@ source /home/vcap/script/$COMPONENT/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
 
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
-source /home/vcap/script/nginx_newrelic_plugin/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

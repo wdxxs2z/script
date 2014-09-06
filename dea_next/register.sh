@@ -83,7 +83,7 @@ pushd /home/vcap/etcdctl
 
 popd
 
-source /home/vcap/script/dea_next/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

@@ -7,6 +7,7 @@ export GOBIN=$GOROOT/bin
 export PATH=.:$PATH:$GOBIN
 export GOOS=linux
 export PATH=/home/vcap/etcdctl/bin:$PATH
+export GOPATH=/home/vcap/etcdctl
 
 etcd_endpoint=""
 last=`sed -n '$=' /home/vcap/script/deployment.etcd`
@@ -43,6 +44,3 @@ if [ "$etcd_endpoint" == "" ]; then
     echo "etcd_endpoint is not found...please check your etcd servers" >> manifest.log
     exit 1
 fi
-
-ETCDCTL_PEERS=`more dep_etcd.txt`
-rm -fr dep_etcd.txt

@@ -3,19 +3,12 @@
 export PATH=/var/vcap/packages/ruby/bin:$PATH
 export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 
-export GOROOT=/home/vcap/go
-export GOARCH=amd64
-export GOBIN=$GOROOT/bin
-export PATH=.:$PATH:$GOBIN
-export GOOS=linux
-export GOPATH=/var/vcap/packages/dea_next/go
-
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
 
-source /home/vcap/script/dea_next/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001
@@ -60,6 +53,12 @@ bundle package --all
 bundle install --local --deployment --without development test
 
 #Golang runner dea_dir server 
+export GOROOT=/home/vcap/go
+export GOARCH=amd64
+export GOBIN=$GOROOT/bin
+export PATH=.:$PATH:$GOBIN
+export GOOS=linux
+export GOPATH=/var/vcap/packages/dea_next/go
 cd /var/vcap/packages/dea_next/go/src/runner
 go build
 go install runner

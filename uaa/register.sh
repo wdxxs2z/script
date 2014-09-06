@@ -40,7 +40,6 @@ fi
 #--------------------------etcd init ----------------------------------
 source /home/vcap/script/uaa/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
-export GOPATH=/home/vcap/etcdctl
 
 register_nats_urls=/deployment/v1/nats-server/nats_urls
 register_uaa_urls=/deployment/v1/uaa-server
@@ -59,7 +58,7 @@ pushd /home/vcap/etcdctl
 
 popd
 
-source /home/vcap/script/uaa/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

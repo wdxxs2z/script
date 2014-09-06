@@ -34,9 +34,7 @@ cp -a $cfscriptdir/gorouter/config/* $GOROUTER_CONFIG/
 rm -fr $GOROUTER_CONFIG/gorouter.yml
 
 #----- etcdctl init ---------
-source /home/vcap/script/gorouter/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
-export GOPATH=/home/vcap/etcdctl
 rm -fr /home/vcap/script/resources/db_url.txt /home/vcap/script/resources/cc_base_url.txt
 
 pushd /home/vcap/
@@ -53,7 +51,7 @@ pushd /home/vcap/etcdctl
 
 popd
 
-source /home/vcap/script/gorouter/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

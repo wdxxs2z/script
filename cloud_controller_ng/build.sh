@@ -6,7 +6,7 @@ export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
-source /home/vcap/script/cloud_controller_ng/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

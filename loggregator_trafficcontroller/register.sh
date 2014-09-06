@@ -41,7 +41,7 @@ log_endpoing_url=`more /home/vcap/script/resources/loggregator_endpoint.txt`
 #zone_num="0"
 
 #---------------- etcd init --------------------
-source /home/vcap/script/loggregator_trafficcontroller/etcdinit.sh
+source /home/vcap/script/util/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 

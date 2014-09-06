@@ -7,12 +7,14 @@ echo "**********************************************"
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
-source /home/vcap/uaa/etcdinit.sh > peers.txt
+
+source /home/vcap/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001
 done < peers.txt
 rm -fr peers.txt
+
 RESOURCE_URL=`etcdctl get /deployment/v1/manifest/resourceurl`
 #----------------------- git init -----------------------
 if [ ! -d /var/vcap ]; then

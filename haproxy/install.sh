@@ -8,7 +8,7 @@ NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d
 HAPROXY_CONFIG=/var/vcap/jobs/haproxy/config
 HAPROXY_BIN=/var/vcap/jobs/haproxy/bin
 
-source /home/vcap/script/haproxy/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

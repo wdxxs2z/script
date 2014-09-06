@@ -10,7 +10,7 @@ cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 indexfile=/home/vcap/script/resources/loggregator_index.txt
 
-source /home/vcap/script/loggregator/editlog.sh
+source /home/vcap/script/util/editlog.sh
 
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 

@@ -10,7 +10,6 @@ export PATH=$PATH:/home/vcap/script/
 chmod +x -R /home/vcap/script/*
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
-export GOPATH=/home/vcap/etcdctl
 
 register_db_dir=/deployment/v1/db
 
@@ -39,7 +38,7 @@ pushd /home/vcap/etcdctl
 
 popd
 
-source /home/vcap/script/postgres/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001
