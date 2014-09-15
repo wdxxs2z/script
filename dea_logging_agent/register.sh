@@ -82,6 +82,22 @@ if [ ! -f /home/vcap/script/resources/natsip.txt ]; then
     exit 1
 fi
 
+#etcd_store_urls
+rm -fr etcdstoredirs.txt /home/vcap/script/resources/etcd_store_url.txt
+
+etcdctl ls /deployment/v1/manifest/etcdstore >> etcdstoredirs.txt
+
+while read urls
+do
+etcdctl get $urls >> /home/vcap/script/resources/etcd_store_url.txt
+done < etcdstoredirs.txt
+
+if [ ! -f /home/vcap/script/resources/etcd_store_url.txt ]; then
+    echo "etcdstores are not deployment...." >> error.txt
+    echo "Loggregator is not success!"
+    exit 1
+fi
+
 #loggregator_endpoint_urls
 rm -rf /home/vcap/script/resources/loggregator_endpoint.txt
 rm -fr traffic_dirs.txt
@@ -176,13 +192,28 @@ let i++
 fi
 done < /home/vcap/script/resources/natsip.txt
 
+last=`sed -n '$=' /home/vcap/script/resources/etcd_store_url.txt`
+j=1
+while read store
+do
+if [ "$j" -eq "$last" ]
+then
+echo -e "\"http://$store:4001\"" >> lstores.txt
+else
+echo -e "\"http://$store:4001\",\c" >> lstores.txt
+let j++
+fi
+done < /home/vcap/script/resources/etcd_store_url.txt
+
 logging_endpoint_url=`awk '{a[NR]=$0}END{srand();i=int(rand()*NR+1);print a[i]}' /home/vcap/script/resources/loggregator_endpoint.txt`
 
 index=$(cat $indexfile)
 
 nats_urls=`more lnats.txt`
 
-edit_dea_log_agent "$index" "$logging_endpoint_url" "$nats_urls"
+etcd_urls=`more lstores.txt`
+
+edit_dea_log_agent "$index" "$logging_endpoint_url" "$nats_urls" "etcd_urls"
 
 rm -fr lnats.txt agentsdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt
 

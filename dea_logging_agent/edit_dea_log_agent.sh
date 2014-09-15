@@ -3,9 +3,12 @@
 function edit_dea_log_agent() {
 
 echo "{
+    \"EtcdUrls\": [$4],
+    \"EtcdMaxConcurrentRequests\" : 10,
+
 	\"Index\": $1,
-	\"LoggregatorAddress\": \"$2:3456\",
-        \"SharedSecret\": \"c1oudc0w\",
+	\"LoggregatorAddress\": \"$2:13456\",
+    \"SharedSecret\": \"c1oudc0w\",
 
 	\"NatsHosts\": [$3],
   	\"NatsPort\": 4222,
@@ -24,5 +27,6 @@ echo "{
 index="$1"
 logg_endpoint="$2"
 nats_urls="$3"
+etcd_urls="$4"
 
-edit_dea_log_agent() "$index" "$logg_endpoint" "$nats_urls"
+edit_dea_log_agent() "$index" "$logg_endpoint" "$nats_urls" "$etcd_urls"

@@ -8,6 +8,7 @@ chmod +x -R /home/vcap/script/*
 
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
+indexfile=/home/vcap/script/resources/ltraffic_index.txt
 
 source /home/vcap/script/loggregator_trafficcontroller/editlogtraffic.sh
 
@@ -106,6 +107,22 @@ if [ ! -f /home/vcap/script/resources/cc_zone.txt ]; then
     exit 1
 fi
 
+#etcd_store_urls
+rm -fr etcdstoredirs.txt /home/vcap/script/resources/etcd_store_url.txt
+
+etcdctl ls /deployment/v1/manifest/etcdstore >> etcdstoredirs.txt
+
+while read urls
+do
+etcdctl get $urls >> /home/vcap/script/resources/etcd_store_url.txt
+done < etcdstoredirs.txt
+
+if [ ! -f /home/vcap/script/resources/etcd_store_url.txt ]; then
+    echo "etcdstores are not deployment...." >> error.txt
+    echo "Loggregator_traffic is not success!"
+    exit 1
+fi
+
 #loggerator_urls
 rm -fr /home/vcap/script/resources/loggerator_url.txt
 rm -fr loggregator_dirs.txt
@@ -143,29 +160,62 @@ done < zonen.txt
 
 #loggregator_trafficconntroller url register
 etcdctl mkdir /deployment/v1/loggregator-traffic/traffic_url
-rm -fr traffic_dirs.txt
-rm -fr /home/vcap/script/resources/loggregator_endpoint.txt
-flag="true"
+etcdctl mkdir /deployment/v1/loggregator-traffic/index
 
-etcdctl ls /deployment/v1/loggregator-traffic/traffic_url >> traffic_dirs.txt
+rm -fr ltrafficdirs.txt /home/vcap/script/resources/ltraffic_urls.txt
 
-while read line
+etcdctl ls /deployment/v1/loggregator-traffic/traffic_url >> ltrafficdirs.txt
+
+while read ltraffic_urls
 do
-    etcdctl get $line >> /home/vcap/script/resources/loggregator_endpoint.txt
-done < traffic_dirs.txt
+etcdctl get $ltraffic_urls >> /home/vcap/script/resources/ltraffic_urls.txt
+done < ltrafficdirs.txt
 
-while read line
-do
-    if [ "$line" == "$NISE_IP_ADDRESS" ]; then
-        flag="false"
-        echo "The ip is exit in loggregator_endpoint : $line"
-        break
+flag="false"
+  
+if [ "$NISE_IP_ADDRESS" != "" ]; then
+    for j in `cat /home/vcap/script/resources/ltraffic_urls.txt`
+    do
+    if [ "$NISE_IP_ADDRESS" == "$j" ]
+    then
+        echo "the ip:$NISE_IP_ADDRESS is exits!"
+        flag="true"
     fi
-done < /home/vcap/script/resources/loggregator_endpoint.txt
+    done
+    if [ "$flag" == "false" ]
+    then
+        curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-traffic/traffic_url -XPOST -d value=$NISE_IP_ADDRESS
 
-if [ "$flag" == "true" ]; then
-    curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-traffic/traffic_url -XPOST -d value=$NISE_IP_ADDRESS
-    echo "$NISE_IP_ADDRESS" >> /home/vcap/script/resources/loggregator_endpoint.txt
+        #register index
+        message=`curl -L http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-traffic/index/0 |jq '.message' | cut -f 2 -d '"'`
+        if [ "$message" == "Key not found" ]; then
+            etcdctl set /deployment/v1/loggregator-traffic/index/0 $NISE_IP_ADDRESS
+            echo "0" > $indexfile
+        else
+            rm -fr ltrafficindexdirs.txt
+            etcdctl ls /deployment/v1/loggregator-traffic/index >> ltrafficindexdirs.txt
+            last=`sed -n '$=' ltrafficindexdirs.txt`
+            new_index=$last
+            etcdctl set /deployment/v1/loggregator-traffic/index/$new_index $NISE_IP_ADDRESS
+            echo "$new_index" > $indexfile
+        fi
+    fi
+    if [ "$flag" == "true" ]
+    then
+        echo "flag is true,this is info: the ip is already regist!And other just update!"
+        #keep old index
+        rm -fr oldindex.txt
+        etcdctl ls /deployment/v1/loggregator-traffic/index >> oldindex.txt
+        for old in `cat oldindex.txt`
+        do
+            old_urls=`etcdctl get $old`
+            if [ "$old_urls" == "$NISE_IP_ADDRESS" ]; then
+                echo "$old" |cut -f6 -d '/' > $indexfile
+            fi
+        done       
+    fi
+else
+    break  
 fi
 
 #---------------- api base ---------------------
@@ -241,16 +291,32 @@ fi
 
 done
 
+#----------------------- etcd_urls ------------------------------------
+last=`sed -n '$=' /home/vcap/script/resources/etcd_store_url.txt`
+j=1
+while read store
+do
+if [ "$j" -eq "$last" ]
+then
+echo -e "\"http://$store:4001\"" >> lstores.txt
+else
+echo -e "\"http://$store:4001\",\c" >> lstores.txt
+let j++
+fi
+done < /home/vcap/script/resources/etcd_store_url.txt
+
 #----------------------- end ------------------------------------------
 
 loggerator_str=`more logurls.txt`
 api_host=`more apiHost.txt`
 sysdomain=`more systemDomain.txt`
 nats_ip=`more ltnats.txt`
+index=$(cat $indexfile)
+etcd_urls=`more lstores.txt`
 
-editlogtraffic "$zone" "$loggerator_str" "$api_host" "$sysdomain" "$nats_ip"
+editlogtraffic "$index" "$etcd_urls" "$zone" "$api_host" "$sysdomain" "$nats_ip"
 
-rm -fr apiHost.txt systemDomain.txt ltnats.txt logurls.txt
+rm -fr apiHost.txt systemDomain.txt ltnats.txt logurls.txt lstores.txt
 popd
 
 #++++++++++++++++++++++ Loggerator Traffic Bin ++++++++++++++++++++++++++++++++

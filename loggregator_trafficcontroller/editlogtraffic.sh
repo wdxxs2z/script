@@ -3,19 +3,23 @@
 function editlogtraffic() {
 
 echo "{
-    \"Loggregators\": {$2},
+	\"JobName\": \"micro_ng\",
+	\"JobIndex\": $1,
+	\"EtcdUrls\": [$2],
+	\"EtcdMaxConcurrentRequests\": 10,
     \"LoggregatorIncomingPort\": 3456,
     \"LoggregatorOutgoingPort\": 38080,
+    \"OutgoingDropsondePort\": 3466,
     \"IncomingPort\": 13456,
     \"OutgoingPort\": 48080,
     \"SkipCertVerify\": true,
     \"SharedSecret\": \"c1oudc0w\",
-    \"Zone\": \"$1\",
+    \"Zone\": \"$3\",
     \"Host\": \"0.0.0.0\",
-    \"ApiHost\": \"$3\",
-    \"SystemDomain\": \"$4\",
+    \"ApiHost\": \"$4\",
+    \"SystemDomain\": \"$5\",
 
-    \"NatsHosts\": [$5],
+    \"NatsHosts\": [$6],
     \"NatsPort\": 4222,
     \"NatsUser\": \"nats\",
     \"NatsPass\": \"c1oudc0w\",
@@ -29,13 +33,11 @@ echo "{
 
 }
 
-zone="$1"
-loggregator_url="$2"
-apihost="$3"
-sysdomain="$4"
-nats_urls="$5"
+index="$1"
+etcd_urls="$2"
+zone="$3"
+apihost="$4"
+sysdomain="$5"
+nats_urls="$6"
 
-editlogtraffic "$zone" "$loggregator_url" "$apihost" "$sysdomain" "$nats_urls"
-
-
-
+editlogtraffic "$index" "$etcd_urls" "$zone" "$apihost" "$sysdomain" "$nats_urls"

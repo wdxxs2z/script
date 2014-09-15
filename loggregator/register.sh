@@ -227,9 +227,6 @@ index=$(cat $indexfile)
 etcd_urls=`more lstores.txt`
 nats_urls=`more lnats.txt`
 
-editlog "$etcd_urls" "$nats_urls" "$index"
-
-rm -fr lstores.txt lnats.txt
 #--------------------------radom save to zones floder -> zname.txt  ----------------------------
 zone=`awk '{a[NR]=$0}END{srand();i=int(rand()*NR+1);print a[i]}' /home/vcap/script/resources/cc_zone.txt`
 if [ ! -d /home/vcap/script/resources/zones ]; then
@@ -275,7 +272,9 @@ echo $NISE_IP_ADDRESS >> /home/vcap/script/resources/zones/$zone.txt
 curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/loggregator-server/pool/$zone -XPOST -d value=$NISE_IP_ADDRESS
 fi
 
-rm -fr etcdstoredirs.txt loggregatorsdirs.txt natsdirs.txt z0dir.txt z1dir.txt zonedirs.txt oldindex.txt
+editlog "$etcd_urls" "$nats_urls" "$index" "$zone"
+
+rm -fr etcdstoredirs.txt loggregatorsdirs.txt natsdirs.txt z0dir.txt z1dir.txt zonedirs.txt oldindex.txt lstores.txt lnats.txt
 
 popd
 

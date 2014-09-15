@@ -50,6 +50,14 @@ jwt:
 
 
 
+
+authentication:
+  policy:
+    lockoutAfterFailures: 5
+    countFailuresWithinSeconds: 3600
+    lockoutPeriodSeconds: 300
+    
+    
 issuer.uri: https://uaa.$1.xip.io
 
 oauth:

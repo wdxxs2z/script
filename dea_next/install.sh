@@ -31,6 +31,11 @@ then
     popd
 fi
 
+if [ ! -d /tmp/warden/rootfs ]; then
+    mkdir -p /tmp/warden
+    cp -a rootfs /tmp/warden/
+fi
+
 # 下载buildpack_cache /var/vcap/packages/build_packages_cache/
 mkdir -p $PACKAGES_DIR/buildpack_cache
 wget -c -r -nd -P $PACKAGES_DIR/buildpack_cache http://$RESOURCE_URL/packages/buildpack_cache
