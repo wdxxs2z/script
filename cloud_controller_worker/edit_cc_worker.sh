@@ -211,9 +211,9 @@ skip_cert_verify: true
 
 app_bits_upload_grace_period_in_seconds: 1200
 
-security_group_definitions: [{\"name\":\"public_networks\",\"rules\":[{\"protocol\":\"all\",\"destination\":\"0.0.0.0-9.255.255.255\"},{\"protocol\":\"all\",\"destination\":\"11.0.0.0-169.253.255.255\"},{\"protocol\":\"all\",\"destination\":\"169.255.0.0-172.15.255.255\"},{\"protocol\":\"all\",\"destination\":\"172.32.0.0-192.167.255.255\"},{\"protocol\":\"all\",\"destination\":\"192.169.0.0-255.255.255.255\"}]},{\"name\":\"private_networks\",\"rules\":[{\"protocol\":\"all\",\"destination\":\"10.0.0.0-10.255.255.255\"},{\"protocol\":\"all\",\"destination\":\"172.16.0.0-172.31.255.255\"},{\"protocol\":\"all\",\"destination\":\"192.168.0.0-192.168.255.255\"}]},{\"name\":\"dns\",\"rules\":[{\"protocol\":\"tcp\",\"destination\":\"0.0.0.0/0\",\"ports\":\"53\"},{\"protocol\":\"udp\",\"destination\":\"0.0.0.0/0\",\"ports\":\"53\"}]}]
-default_running_security_groups: [\"public_networks\",\"private_networks\",\"dns\"]
-default_staging_security_groups: [\"public_networks\",\"private_networks\",\"dns\"]
+security_group_definitions: [{"name":"public_networks","rules":[{"protocol":"all","destination":"0.0.0.0-9.255.255.255"},{"protocol":"all","destination":"11.0.0.0-169.253.255.255"},{"protocol":"all","destination":"169.255.0.0-172.15.255.255"},{"protocol":"all","destination":"172.32.0.0-192.167.255.255"},{"protocol":"all","destination":"192.169.0.0-255.255.255.255"}]},{"name":"private_networks","rules":[{"protocol":"all","destination":"10.0.0.0-10.255.255.255"},{"protocol":"all","destination":"172.16.0.0-172.31.255.255"},{"protocol":"all","destination":"192.168.0.0-192.168.255.255"}]},{"name":"dns","rules":[{"protocol":"tcp","destination":"0.0.0.0/0","ports":"53"},{"protocol":"udp","destination":"0.0.0.0/0","ports":"53"}]}]
+default_running_security_groups: ["public_networks","private_networks","dns"]
+default_staging_security_groups: ["public_networks","private_networks","dns"]
 
 " >> /var/vcap/jobs/cloud_controller_worker/config/cloud_controller_ng.yml
 }
