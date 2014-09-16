@@ -24,7 +24,7 @@ logging:
 
 
 loggregatorConfig:
-  url: $2:3456
+  url: $2:13456
   shared_secret: c1oudc0w
 
 

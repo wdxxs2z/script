@@ -89,7 +89,7 @@ logging:
 
 
 loggregator:
-  router: $5:3456
+  router: $5:13456
   shared_secret: c1oudc0w
   url: wss://loggregator.$4.xip.io:443
 

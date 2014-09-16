@@ -42,7 +42,7 @@ logging:
 
 
 loggregator:
-  router: $3:3456
+  router: $3:13456
   shared_secret: c1oudc0w
 
 
