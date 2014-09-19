@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 NGINX_NEWRELIC_PLUGIN_CONFIG=/var/vcap/jobs/cloud_controller_ng/config
@@ -15,9 +15,9 @@ if [ ! -d /var/vcap ]; then
 fi
 
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     popd
 fi
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 CLOUD_CONTROLLER_WORKER_CONFIG=/var/vcap/jobs/cloud_controller_worker/config
@@ -21,9 +21,9 @@ fi
 mkdir -p $CLOUD_CONTROLLER_WORKER_CONFIG
 mkdir -p $CLOUD_CONTROLLER_WORKER_BIN
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     popd
 fi
 

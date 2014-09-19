@@ -2,7 +2,7 @@
 
 homedir=/home/vcap
 cfdir=/home/vcap/cf-release
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 WARDEN_CONF_DIR=/var/vcap/jobs/dea_next/config
 WARDEN_BIN_DIR=/var/vcap/jobs/dea_next/bin
 DEA_NEXT_CONFIG=/var/vcap/jobs/dea_next/config
@@ -20,9 +20,9 @@ if [ ! -d /var/vcap ]; then
     sudo chown -R vcap:vcap /var/vcap
 fi
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     sudo chown -R cf-config-script
     popd
 fi

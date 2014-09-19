@@ -33,6 +33,7 @@ pushd /home/vcap/
     cd /home/vcap/cf-release
     git submodule update --init
     git pull origin master
+    git submodule update --init
     git checkout $cf_version
     
 popd

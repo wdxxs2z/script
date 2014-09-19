@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
@@ -18,9 +18,9 @@ if [ ! -d /var/vcap ]; then
 fi
 
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     popd
 fi
 

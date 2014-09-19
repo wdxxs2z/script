@@ -6,7 +6,7 @@ HM9000_BIN=/var/vcap/jobs/hm9000/bin
 export PATH=$PATH:/home/vcap/script/
 chmod +x -R /home/vcap/script/*
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 source /home/vcap/script/hm9000/edithm9000.sh
@@ -18,9 +18,9 @@ if [ ! -d /var/vcap ]; then
     sudo chown vcap:vcap /var/vcap
 fi
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     popd
 fi
 

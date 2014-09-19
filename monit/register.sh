@@ -4,7 +4,7 @@ echo "**********************************************"
 echo "            register monit                    "
 echo "**********************************************"
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH

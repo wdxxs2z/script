@@ -4,7 +4,7 @@ echo "**********************************************"
 echo "            register uaa                      "
 echo "**********************************************"
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 UAA_CONFIG=/var/vcap/jobs/uaa/config
@@ -26,9 +26,9 @@ if [ ! -d /var/vcap ]; then
     sudo chown vcap:vcap /var/vcap
 fi
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     popd
 fi
 

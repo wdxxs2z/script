@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 POSTGRES_CONFIG=/var/vcap/jobs/postgres/config
@@ -46,9 +46,9 @@ done < peers.txt
 
 rm -fr peers.txt
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
-    git clone https://github.com/wdxxs2z/cf-config-script
+    git clone https://github.com/wdxxs2z/cf-dep-configuration
     popd
 fi
 

@@ -4,7 +4,7 @@ echo "**********************************************"
 echo "            register cloud_controller_ng      "
 echo "**********************************************"
 
-cfscriptdir=/home/vcap/cf-config-script
+cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 
 export PATH=$PATH:/home/vcap/script/
@@ -26,7 +26,7 @@ fi
 mkdir -p $CLOUD_CONTROLLER_NG_CONFIG
 mkdir -p $CLOUD_CONTROLLER_NG_BIN
 
-if [ ! -d $homedir/cf-config-script ]; then
+if [ ! -d $homedir/cf-dep-configuration ]; then
     pushd $homedir
     git clone https://github.com/wdxxs2z/cf-config-script
     popd
