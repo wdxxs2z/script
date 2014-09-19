@@ -10,7 +10,7 @@ cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 indexfile=/home/vcap/script/resources/loggregator_index.txt
 
-source /home/vcap/script/util/editlog.sh
+source /home/vcap/script/loggregator/editlog.sh
 
 NISE_IP_ADDRESS=${NISE_IP_ADDRESS:-`ip addr | grep 'inet .*global' | cut -f 6 -d ' ' | cut -f1 -d '/' | head -n 1`}
 
@@ -63,7 +63,7 @@ pushd /home/vcap/etcdctl
 
 popd
 
-source /home/vcap/script/cloud_controller_clock/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001

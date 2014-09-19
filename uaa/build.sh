@@ -155,7 +155,7 @@ mkdir /var/vcap/packages/uaa/vcap-common
 cp -a $homedir/cf-release/src/cf-registrar-bundle-for-identity/* /var/vcap/packages/uaa/vcap-common/
 cd /var/vcap/packages/uaa/vcap-common
 bundle package --all
-bundle install --local --deployment --without development test
+bundle install --binstubs --deployment --local --without=development test
 
 pushd /var/vcap/packages
 

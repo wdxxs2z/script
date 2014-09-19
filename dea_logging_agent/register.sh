@@ -213,11 +213,12 @@ nats_urls=`more lnats.txt`
 
 etcd_urls=`more lstores.txt`
 
-edit_dea_log_agent "$index" "$logging_endpoint_url" "$nats_urls" "etcd_urls"
+edit_dea_log_agent "$index" "$logging_endpoint_url" "$nats_urls" "$etcd_urls"
 
 rm -fr lnats.txt agentsdirs.txt natsdirs.txt oldindex.txt traffic_dirs.txt
 
 #+++++++++++++++++++++++++++dea_logging_bin init+++++++++++++++++++++++++
 echo "Dea_Logging_bin init......"
 cp -a $cfscriptdir/dea_logging_agent/bin/* $LOG_DEA_AGENT_BIN/
+sed -i "s/192.168.172.136/$logging_endpoint_url" $LOG_DEA_AGENT_BIN/dea_logging_agent_ctl
 chmod -R +x $LOG_DEA_AGENT_BIN/

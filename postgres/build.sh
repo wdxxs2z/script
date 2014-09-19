@@ -33,9 +33,6 @@ if [ ! -d $homedir/cf-release ]; then
 fi
 
 #----------------- etcd init --------------------------
-
-source /home/vcap/script/postgres/etcdinit.sh
-
 pushd /home/vcap/
 
 git clone https://github.com/coreos/etcdctl

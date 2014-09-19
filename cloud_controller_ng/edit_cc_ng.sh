@@ -224,6 +224,8 @@ security_group_definitions: [{"name":"public_networks","rules":[{"protocol":"all
 default_running_security_groups: ["public_networks","private_networks","dns"]
 default_staging_security_groups: ["public_networks","private_networks","dns"]
 
+allowed_cors_domains: []
+
 
 
 allowed_cors_domains: []

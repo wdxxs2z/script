@@ -35,12 +35,9 @@ cd src/cloud_controller_ng
 git submodule update --init
 popd
 
-if [ ! -d /var/vcap/packages/cloud_controller_ng/cloud_controller_ng ]; then
-    mkdir -p /var/vcap/packages/cloud_controller_ng/cloud_controller_ng
-fi
-
 rm -fr /var/vcap/packages/cloud_controller_ng
-cp -a $homedir/cf-release/src/cloud_controller_ng /var/vcap/packages/cloud_controller_ng/
+mkdir -p /var/vcap/packages/cloud_controller_ng/cloud_controller_ng
+cp -a $homedir/cf-release/src/cloud_controller_ng/* /var/vcap/packages/cloud_controller_ng/cloud_controller_ng/
 
 #------------------------ Resolve the cloud_controller_ng depdens ------
 if [ ! -d /var/vcap/packages ]; then 

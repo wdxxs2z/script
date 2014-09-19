@@ -4,12 +4,12 @@ function editlog() {
 
 echo "{
   \"EtcdUrls\": [$1],
-  \"EtcdMaxConcurrentRequests\" : 10,
+  \"EtcdMaxConcurrentRequests\": 10,
   \"WSMessageBufferSize\": 100,
   \"LegacyIncomingMessagesPort\": 3456,
   \"DropsondeIncomingMessagesPort\": 3457,
   \"OutgoingPort\": 38080,
-  \"Zone\": "$4",
+  \"Zone\": \"$4\",
   \"SkipCertVerify\": true,
   \"JobName\": \"micro_ng\",
   \"Index\": $3,
