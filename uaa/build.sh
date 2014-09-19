@@ -8,7 +8,7 @@ homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
 
-source /home/vcap/util/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001
