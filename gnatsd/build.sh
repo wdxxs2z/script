@@ -4,14 +4,6 @@ echo "**********************************************"
 echo "            build gnatsd                      "
 echo "**********************************************"
 
-export GOROOT=/home/vcap/go
-export GOARCH=amd64
-export GOBIN=$GOROOT/bin
-export PATH=.:$PATH:$GOBIN
-export GOOS=linux
-export PATH=/var/vcap/packages/gnatsd/bin:$PATH
-export GOPATH=/var/vcap/packages/gnatsd
-
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
@@ -46,16 +38,23 @@ mkdir -p /var/vcap/packages
 
 pushd /var/vcap/packages
 
-    echo "Setup git checkout gonatsd......"
-    cp -a $homedir/cf-release/src/gnatsd /var/vcap/packages
-    mkdir -p /var/vcap/packages/gnatsd/src/github.com/apcera/gnatsd
-    cp -a $homedir/cf-release/src/gnatsd/* /var/vcap/packages/gnatsd/src/github.com/apcera/gnatsd
-    cd $GOPATH
-    go build
-    go install
-    mkdir -p /var/vcap/packages/gnatsd/bin
-    mv gnatsd /var/vcap/packages/gnatsd/bin
-    cd /var/vcap/packages
+export GOROOT=/home/vcap/go
+export GOARCH=amd64
+export GOBIN=$GOROOT/bin
+export PATH=.:$PATH:$GOBIN
+export GOOS=linux
+export PATH=/var/vcap/packages/gnatsd/bin:$PATH
+export GOPATH=/var/vcap/packages/gnatsd
+
+cp -a $homedir/cf-release/src/gnatsd /var/vcap/packages
+mkdir -p /var/vcap/packages/gnatsd/src/github.com/apcera/gnatsd
+cp -a $homedir/cf-release/src/gnatsd/* /var/vcap/packages/gnatsd/src/github.com/apcera/gnatsd
+cd $GOPATH
+go build
+go install
+mkdir -p /var/vcap/packages/gnatsd/bin
+mv gnatsd /var/vcap/packages/gnatsd/bin
+cd /var/vcap/packages
 
 mkdir -p /var/vcap/packages/common/
 

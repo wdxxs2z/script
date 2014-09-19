@@ -1,13 +1,5 @@
 #!/bin/bash
 
-export GOROOT=/home/vcap/go
-export GOARCH=amd64
-export GOBIN=$GOROOT/bin
-export PATH=.:$PATH:$GOBIN
-export GOOS=linux
-export PATH=/var/vcap/packages/etcd/bin:$PATH
-export GOPATH=/var/vcap/packages/etcd
-
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
@@ -44,7 +36,14 @@ pushd /var/vcap/packages
 
 echo "Setup git checkout etcd......"
 cp -a $homedir/cf-release/src/etcd /var/vcap/packages
-cd /var/vcap/packages/etcd 
+cd /var/vcap/packages/etcd
+export GOROOT=/home/vcap/go
+export GOARCH=amd64
+export GOBIN=$GOROOT/bin
+export PATH=.:$PATH:$GOBIN
+export GOOS=linux
+export PATH=/var/vcap/packages/etcd/bin:$PATH
+export GOPATH=/var/vcap/packages/etcd
 ./build
 rm -fr /var/vcap/packages/etcd/etcd
 cp bin/etcd /var/vcap/packages/etcd/

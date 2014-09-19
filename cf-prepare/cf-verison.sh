@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
-source /home/vcap/script/cf-prepare/etcdinit.sh
 
 pushd /home/vcap/
 

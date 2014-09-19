@@ -1,13 +1,5 @@
 #!/bin/bash
 
-export GOROOT=/home/vcap/go
-export GOARCH=amd64
-export GOBIN=$GOROOT/bin
-export PATH=.:$PATH:$GOBIN
-export GOOS=linux
-export PATH=/var/vcap/packages/hm9000/bin:$PATH
-export GOPATH=/var/vcap/packages/hm9000
-
 homedir=/home/vcap
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
@@ -41,6 +33,13 @@ mkdir -p /var/vcap/packages
 pushd /var/vcap/packages
 
 echo "Setup git checkout hm9000......"
+export GOROOT=/home/vcap/go
+export GOARCH=amd64
+export GOBIN=$GOROOT/bin
+export PATH=.:$PATH:$GOBIN
+export GOOS=linux
+export PATH=/var/vcap/packages/hm9000/bin:$PATH
+export GOPATH=/var/vcap/packages/hm9000
 cp -a $homedir/cf-release/src/hm9000 /var/vcap/packages
 cd $GOPATH/src/github.com/cloudfoundry/hm9000
 go build
@@ -72,6 +71,4 @@ tar -zcf hm9000.tar.gz hm9000 common syslog_aggregator
 curl -F "action=/upload/build" -F "uploadfile=@hm9000.tar.gz" http://$RESOURCE_URL/upload/build
 
 rm -fr hm9000.tar.gz
-popd
-
 popd

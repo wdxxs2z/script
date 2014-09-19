@@ -1,13 +1,5 @@
 #!/bin/bash
 
-export GOROOT=/home/vcap/go
-export GOARCH=amd64
-export GOBIN=$GOROOT/bin
-export PATH=.:$PATH:$GOBIN
-export GOOS=linux
-export PATH=/var/vcap/packages/gorouter/bin:$PATH
-export GOPATH=/var/vcap/packages/gorouter
-
 cfscriptdir=/home/vcap/cf-config-script
 homedir=/home/vcap
 
@@ -40,15 +32,25 @@ if [ ! -d /var/vcap/packages/gorouter ]; then
 fi
 
 echo "This step will always be install......"
-    mkdir -p /var/vcap/packages
-    pushd /var/vcap/packages
-    
-    cd $GOPATH
-    go build
-    go install
-    mkdir -p bin
-    cp -a gorouter $GOPATH/bin/
-    popd
+
+pushd /var/vcap/packages
+
+export GOROOT=/home/vcap/go
+export GOARCH=amd64
+export GOBIN=$GOROOT/bin
+export PATH=.:$PATH:$GOBIN
+export GOOS=linux
+export PATH=/var/vcap/packages/gorouter/bin:$PATH
+export GOPATH=/var/vcap/packages/gorouter
+mkdir -p /var/vcap/packages
+   
+cd $GOPATH
+go build
+go install
+mkdir -p bin
+cp -a gorouter $GOPATH/bin/
+
+popd
 
 pushd /var/vcap/packages
 
