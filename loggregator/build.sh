@@ -30,6 +30,10 @@ popd
 
 echo "This step will always be install......"
 mkdir -p /var/vcap/packages
+mkdir -p /var/vcap/packages/loggregator
+mkdir -p /var/vcap/packages/loggregator_trafficcontroller
+mkdir -p /var/vcap/packages/dea_logging_agent
+mkdir -p /var/vcap/packages/metron_agent
 
 pushd /var/vcap/packages
 
@@ -61,16 +65,17 @@ cd $GOPATH/bin
     cd /var/vcap/packages/loggregators/src/deaagent/deaagent
         go build
         cp ./deaagent /var/vcap/packages/loggregators/release/
+     
+    cd /varvcap/packages/loggregators/src/metron
+        go build
+        cp ./metron /var/vcap/packages/loggregators/release/
     
-    echo "--------loggregator---------"
-    mkdir -p /var/vcap/packages/loggregator
-    mkdir -p /var/vcap/packages/loggregator_trafficcontroller
-    mkdir -p /var/vcap/packages/dea_logging_agent
-    
+echo "--------loggregator---------"
     cd /var/vcap/packages/loggregators/
     cp release/loggregator /var/vcap/packages/loggregator/
     cp release/trafficcontroller /var/vcap/packages/loggregator_trafficcontroller/
     cp release/deaagent /var/vcap/packages/dea_logging_agent/
+    cp release/metron /var/vcap/packages/metron_agent/
     
     pushd /var/vcap/packages/
 
@@ -100,8 +105,11 @@ cd $GOPATH/bin
     
     tar -zcf dea_logging_agent.tar.gz dea_logging_agent common syslog_aggregator
     curl -F "action=/upload/build" -F "uploadfile=@dea_logging_agent.tar.gz" http://$RESOURCE_URL/upload/build
+
+    tar -zcf metron_agent.tar.gz metron_agent common syslog_aggregator
+    curl -F "action=/upload/build" -F "uploadfile=@metron_agent.tar.gz" http://$RESOURCE_URL/upload/build
     
-    rm -fr loggregator.tar.gz loggregator_trafficcontroller.tar.gz dea_logging_agent.tar.gz
+    rm -fr loggregator.tar.gz loggregator_trafficcontroller.tar.gz dea_logging_agent.tar.gz metron_agent.tar.gz
        
     popd
  
@@ -109,4 +117,3 @@ cd $GOPATH/bin
     rm -fr /var/vcap/packages/loggregators
 
 echo "Loggregator install success!!"
-
