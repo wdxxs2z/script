@@ -27,10 +27,6 @@ fi
 mkdir -p $METRON_AGENT_CONFIG
 mkdir -p $METRON_AGENT_BIN
 
-if [ ! -d $LOG_TRAFFICCONTROLLER_CONFIG ]; then
-mkdir -p $LOG_TRAFFICCONTROLLER_CONFIG
-fi
-
 pushd $METRON_AGENT_CONFIG
 
 cp -a $cfscriptdir/metron_agent/config/* $METRON_AGENT_CONFIG/
@@ -54,7 +50,7 @@ pushd /home/vcap/etcdctl
 
 popd
 
-source /home/vcap/script/loggregator_trafficcontroller/etcdinit.sh > peers.txt
+source /home/vcap/script/util/etcdinit.sh > peers.txt
 while read line
 do
     export ETCDCTL_PEERS=http://$line:4001
