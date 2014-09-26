@@ -23,11 +23,12 @@ fi
 
 mkdir -p $ETCD_METRICS_BIN
 
+cp -a $cfscriptdir/etcd_metrics_server/* /var/vcap/jobs/etcd_metrics_server/
 cp -a $cfscriptdir/etcd_metrics_server/bin/* $ETCD_METRICS_BIN/
 chmod -R +x $ETCD_METRICS_BIN/
 
 #--------------------------etcd init ----------------------------------
-source /home/vcap/script/loggregator/etcdinit.sh
+source /home/vcap/script/util/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 

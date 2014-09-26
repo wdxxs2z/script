@@ -1,12 +1,10 @@
-#!/bin/bash
-
 function editlogtraffic() {
 
 echo "{
-	\"JobName\": \"micro_ng\",
-	\"JobIndex\": $1,
-	\"EtcdUrls\": [$2],
-	\"EtcdMaxConcurrentRequests\": 10,
+    \"JobName\": \"micro_ng\",
+    \"JobIndex\": $1,
+    \"EtcdUrls\": [$2],
+    \"EtcdMaxConcurrentRequests\": 10,
     \"LoggregatorIncomingPort\": 13456,
     \"LoggregatorOutgoingPort\": 38080,
     \"OutgoingDropsondePort\": 38081,

@@ -1,7 +1,7 @@
 #!/bin/bash
-COMPONENT=metron_agent
+COMPONENT=etcd_metrics_server
 
-source /home/vcap/script/$COMPONENT/register.sh
+source /home/vcap/script/etcd_metrics_server/register.sh
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
 

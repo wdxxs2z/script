@@ -42,7 +42,7 @@ cp -a $cfscriptdir/loggregator/config/* $LOGGREGATOR_CONFIG/
 rm -fr $LOGGREGATOR_CONFIG/loggregator.json
 
 #--------------------------etcd init ----------------------------------
-source /home/vcap/script/loggregator/etcdinit.sh
+source /home/vcap/script/util/etcdinit.sh
 export PATH=/home/vcap/etcdctl/bin:$PATH
 export GOPATH=/home/vcap/etcdctl
 

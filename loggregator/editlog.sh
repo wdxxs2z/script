@@ -1,7 +1,4 @@
-#!/bin/bash
-
 function editlog() {
-
 echo "{
   \"EtcdUrls\": [$1],
   \"EtcdMaxConcurrentRequests\": 10,
@@ -29,8 +26,6 @@ echo "{
     
     
 }" >> /var/vcap/jobs/loggregator/config/loggregator.json
-
-
 }
 
 etcd="$1"

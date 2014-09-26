@@ -21,8 +21,7 @@ if [ ! -f $PACKAGES_DIR/$COMPONENT.tar.gz ]; then
 fi
 
 pushd $PACKAGES_DIR
-    gunzip $COMPONENT.tar.gz
-    tar -xf $COMPONENT.tar 
+    tar zxf $COMPONENT.tar.gz
     rm -fr $COMPONENT.tar.gz $COMPONENT.tar
 popd
 

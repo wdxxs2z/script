@@ -5,7 +5,7 @@ METRON_AGENT_BIN=/var/vcap/jobs/metron_agent/bin
 
 export PATH=$PATH:/home/vcap/script/
 chmod +x -R /home/vcap/script/*
-
+mkdir -p /var/vcap/jobs/metron_agent/config
 cfscriptdir=/home/vcap/cf-dep-configuration
 homedir=/home/vcap
 source /home/vcap/script/metron_agent/editmetron.sh
@@ -26,6 +26,10 @@ fi
 
 mkdir -p $METRON_AGENT_CONFIG
 mkdir -p $METRON_AGENT_BIN
+
+if [ ! -d $LOG_TRAFFICCONTROLLER_CONFIG ]; then
+mkdir -p $LOG_TRAFFICCONTROLLER_CONFIG
+fi
 
 pushd $METRON_AGENT_CONFIG
 
@@ -231,7 +235,7 @@ etcd_urls=`more lstores.txt`
 
 editmetron "$etcd_urls" "$index" "$nats_ip" "$zone"
 
-rm ./*.txt
+rm -fr ltnats.txt lstores.txt z1dir.txt z0dir.txt oldindex.txt metron_agent_indexdirs.txt metron_agentdirs.txt metron_agentdirs.txt
 
 popd
 
