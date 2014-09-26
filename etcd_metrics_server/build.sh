@@ -1,6 +1,7 @@
 #!/bin/bash
 
 homedir=/home/vcap
+rm -fr /var/vcap/packages/etcd_metrics_server
 
 export PATH=/home/vcap/etcdctl/bin:$PATH
 source /home/vcap/script/util/etcdinit.sh > peers.txt
@@ -32,21 +33,21 @@ mkdir -p /var/vcap/packages
 pushd /var/vcap/packages
 
 cd /home/vcap/cf-release/src
-mkdir -p /var/vcap/packages/etcd-metrics-server/bin
+mkdir -p /var/vcap/packages/etcd_metrics_server/bin
 
 REPO_NAME=github.com/cloudfoundry-incubator/etcd-metrics-server
-REPO_DIR=/var/vcap/packages/etcd-metrics-server/src/${REPO_NAME}
+REPO_DIR=/var/vcap/packages/etcd_metrics_server/src/${REPO_NAME}
 
 mkdir -p $(dirname $REPO_DIR)
 
 cp -a /home/vcap/cf-release/src/etcd-metrics-server/ $REPO_DIR
 
 export GOROOT=$(readlink -nf /home/vcap/go)
-export GOPATH=/var/vcap/packages/etcd-metrics-server:${REPO_DIR}/Godeps/_workspace
+export GOPATH=/var/vcap/packages/etcd_metrics_server:${REPO_DIR}/Godeps/_workspace
 export PATH=$GOROOT/bin:$PATH
 
 go install ${REPO_NAME}
-cp /home/vcap/go/bin/etcd-metrics-server /var/vcap/packages/etcd-metrics-server/bin/
+cp /home/vcap/go/bin/etcd-metrics-server /var/vcap/packages/etcd_metrics_server/bin/
 popd
 
 pushd /var/vcap/packages
@@ -69,10 +70,10 @@ then
     sed -i "s/\/usr\/sbin/\/sbin/g" /var/vcap/packages/syslog_aggregator/setup_syslog_forwarder.sh 
 fi
 
-tar -zcf etcd-metrics-server.tar.gz etcd-metrics-server common syslog_aggregator
+tar -zcf etcd_metrics_server.tar.gz etcd_metrics_server common syslog_aggregator
 
-curl -F "action=/upload/build" -F "uploadfile=@etcd-metrics-server.tar.gz" http://$RESOURCE_URL/upload/build
+curl -F "action=/upload/build" -F "uploadfile=@etcd_metrics_server.tar.gz" http://$RESOURCE_URL/upload/build
 
-rm -fr etcd-metrics-server.tar.gz
+rm -fr etcd_metrics_server.tar.gz
 
 popd

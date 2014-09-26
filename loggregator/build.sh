@@ -30,10 +30,10 @@ popd
 
 echo "This step will always be install......"
 mkdir -p /var/vcap/packages
-mkdir -p /var/vcap/packages/loggregator
-mkdir -p /var/vcap/packages/loggregator_trafficcontroller
-mkdir -p /var/vcap/packages/dea_logging_agent
-mkdir -p /var/vcap/packages/metron_agent
+mkdir -p /var/vcap/packages/loggregator/
+mkdir -p /var/vcap/packages/loggregator_trafficcontroller/
+mkdir -p /var/vcap/packages/dea_logging_agent/
+mkdir -p /var/vcap/packages/metron_agent/
 
 pushd /var/vcap/packages
 
@@ -66,12 +66,13 @@ cd $GOPATH/bin
         go build
         cp ./deaagent /var/vcap/packages/loggregators/release/
      
-    cd /varvcap/packages/loggregators/src/metron
+    cd /var/vcap/packages/loggregators/src/metron
         go build
         cp ./metron /var/vcap/packages/loggregators/release/
     
 echo "--------loggregator---------"
     cd /var/vcap/packages/loggregators/
+    mkdir -p /var/vcap/packages/loggregator
     cp release/loggregator /var/vcap/packages/loggregator/
     cp release/trafficcontroller /var/vcap/packages/loggregator_trafficcontroller/
     cp release/deaagent /var/vcap/packages/dea_logging_agent/

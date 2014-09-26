@@ -6,8 +6,8 @@ echo "{
     \"EtcdUrls\": [$4],
     \"EtcdMaxConcurrentRequests\" : 10,
 
-	\"Index\": $1,
-	\"LoggregatorAddress\": \"$2:3456\",
+    \"Index\": $1,
+    \"LoggregatorAddress\": \"$2:13456\",
     \"SharedSecret\": \"c1oudc0w\",
 
 	\"NatsHosts\": [$3],
