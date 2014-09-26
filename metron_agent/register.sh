@@ -229,13 +229,26 @@ echo $NISE_IP_ADDRESS >> /home/vcap/script/resources/zones/$zone.txt
 curl http://$etcd_endpoint:4001/v2/keys/deployment/v1/metron_agent/pool/$zone -XPOST -d value=$NISE_IP_ADDRESS
 fi
 
+last=`sed -n '$=' /home/vcap/script/resources/natsip.txt`
+i=1
+while read line
+do
+if [ "$i" -eq "$last" ]
+then
+echo -e "\"$line\"" >> lnats.txt
+else
+echo -e "\"$line\",\c" >> lnats.txt
+let i++
+fi
+done < /home/vcap/script/resources/natsip.txt
+
 nats_ip=`more ltnats.txt`
 index=$(cat $indexfile)
 etcd_urls=`more lstores.txt`
 
 editmetron "$etcd_urls" "$index" "$nats_ip" "$zone"
 
-rm -fr ltnats.txt lstores.txt z1dir.txt z0dir.txt oldindex.txt metron_agent_indexdirs.txt metron_agentdirs.txt metron_agentdirs.txt
+rm ./*.txt
 
 popd
 
