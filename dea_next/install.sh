@@ -26,7 +26,8 @@ fi
 if grep -q -i centos /etc/issue
 then
     wget -P $PACKAGES_DIR http://$RESOURCE_URL/packages/rootfs/centos6.5.tar.gz
-    pushd $PACKAGES_DIR
+    mkdir -p /tmp/warden
+    pushd /tmp/warden
         tar -zxf centos6.5.tar.gz
     popd
 fi
