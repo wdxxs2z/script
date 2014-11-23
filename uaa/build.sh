@@ -151,11 +151,8 @@ export PATH=/var/vcap/packages/ruby/bin:$PATH
 export RUBY_PATH=/var/vcap/packages/ruby:$RUBY_PATH
 cd /var/vcap/packages/uaa
 rm -fr /var/vcap/packages/uaa/vcap-common
-mkdir /var/vcap/packages/uaa/vcap-common
-cp -a $homedir/cf-release/src/cf-registrar-bundle-for-identity/* /var/vcap/packages/uaa/vcap-common/
-cd /var/vcap/packages/uaa/vcap-common
-bundle package --all
-bundle install --binstubs --deployment --local --without=development test
+wget http://$RESOURCE_URL/packages/uaa/vcap-common.tar.gz
+tar -zxvf vcap-common.tar.gz
 
 pushd /var/vcap/packages
 

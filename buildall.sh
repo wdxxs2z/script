@@ -19,6 +19,8 @@ source $SCRIPTDIR/etcdctl/build.sh
 source $SCRIPTDIR/cf-prepare/cf-verison.sh
 rm -fr /var/vcap/packages/etcd
 source $SCRIPTDIR/etcd/build.sh
+rm -fr /var/vcap/packages/etcd_metrics_server
+source $SCRIPTDIR/etcd_metrics_server/build.sh
 rm -fr /var/vcap/packages/postgres
 source $SCRIPTDIR/postgres/build.sh
 rm -fr /var/vcap/packages/gnatsd
